@@ -1107,7 +1107,7 @@ body {
 }
 
 @media (max-width: 1100px) {
-  .presence-sidebar { display: none; }
+  .presence-sidebar { display: none !important; }
   .root-layout .app-shell { max-width: 100%; }
 }
 </style>
@@ -1124,7 +1124,13 @@ body {
     <div class="sub">Pain-point analysis · Root causes · 30/60/90-day action plan · Medi Assist Insurance TPA</div>
   </div>
   <div class="meta">
-    <div id="fb-badge" style="font-size:11px;color:#FCD34D;font-family:var(--mono)">🟡 Connecting…</div>
+    <div style="display:flex;align-items:center;gap:10px">
+  <div id="fb-badge" style="font-size:11px;color:#FCD34D;font-family:var(--mono)">🟡 Connecting…</div>
+  <button id="toggle-presence" onclick="togglePresencePanel()" title="Toggle live users panel"
+    style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#93C5FD;
+    border-radius:5px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:var(--mono);
+    white-space:nowrap">👥 Hide Panel</button>
+</div>
   </div>
 </div>
 
@@ -3129,6 +3135,22 @@ function showPanel(id, evt) {
 populateOwners();
 updateClock();
 setInterval(updateClock, 60000);
+  function togglePresencePanel() {
+  const sidebar = document.getElementById('presence-sidebar');
+  const btn = document.getElementById('toggle-presence');
+  const hidden = sidebar.classList.toggle('hidden');
+  btn.textContent = hidden ? '👥 Show Panel' : '👥 Hide Panel';
+  localStorage.setItem('presence_hidden', hidden ? '1' : '0');
+}
+
+// Restore toggle state on load
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('presence_hidden') === '1') {
+    document.getElementById('presence-sidebar')?.classList.add('hidden');
+    const btn = document.getElementById('toggle-presence');
+    if (btn) btn.textContent = '👥 Show Panel';
+  }
+});
 </script>
 <!-- ══════════════════════════════════════════════════
      CREATE ITEM MODAL
