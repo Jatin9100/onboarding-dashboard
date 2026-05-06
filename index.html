@@ -1121,9 +1121,12 @@ body {
 }
 .presence-sidebar.sidebar-collapsed {
   width: 0 !important;
+  min-width: 0 !important;
   opacity: 0;
   pointer-events: none;
   box-shadow: none;
+  overflow: hidden;
+  border-left: none;
 }
 
 /* Collapse button inside sidebar header */
@@ -3955,16 +3958,21 @@ function togglePresenceSidebar() {
   }
 }
 
-// Restore sidebar state from localStorage on load
-(function restoreSidebarState() {
+// Restore sidebar state from localStorage on load.
+// IMPORTANT: #presence-sidebar is rendered AFTER this script block ends,
+// so getElementById will return null if called immediately here.
+// We defer to DOMContentLoaded so the element actually exists.
+document.addEventListener('DOMContentLoaded', function restoreSidebarState() {
   const collapsed = localStorage.getItem('ob_sidebar_collapsed') === '1';
+  const sidebar   = document.getElementById('presence-sidebar');
+  const expandTab = document.getElementById('sidebar-expand-tab');
   if (collapsed) {
-    const sidebar   = document.getElementById('presence-sidebar');
-    const expandTab = document.getElementById('sidebar-expand-tab');
     if (sidebar)   sidebar.classList.add('sidebar-collapsed');
     if (expandTab) expandTab.classList.add('visible');
+  } else {
+    if (expandTab) expandTab.classList.remove('visible');
   }
-})();
+});
 window.togglePresenceSidebar = togglePresenceSidebar;
 
 /* Expose trash system functions globally (called from HTML onclick) */
@@ -4251,17 +4259,19 @@ try {
     }
 
     list.innerHTML = sorted.map(u => {
+      const name     = u.name   || '?';
+      const status   = u.status || 'Online';
       const isMe     = u.sessionId === SESSION_ID;
       const ago      = u.lastSeen ? Math.round((now - u.lastSeen) / 1000) : null;
       const agoStr   = ago === null ? '' : ago < 10 ? 'just now' : ago < 60 ? ago + 's ago' : Math.round(ago/60) + 'm ago';
-      const icon     = STATUS_ICONS[u.status] || '🟢';
+      const icon     = STATUS_ICONS[status] || '🟢';
       const offCls   = u.isOffline ? ' presence-user-offline' : '';
       const meTag    = isMe ? '<span class="presence-me-tag">you</span>' : '';
       return `<div class="presence-user${offCls}">
-        <div class="presence-user-avatar" style="background:${stringToColor(u.name)}">${u.name.charAt(0).toUpperCase()}</div>
+        <div class="presence-user-avatar" style="background:${stringToColor(name)}">${name.charAt(0).toUpperCase()}</div>
         <div class="presence-user-info">
-          <div class="presence-user-name">${escHtml(u.name)} ${meTag}</div>
-          <div class="presence-user-status">${icon} ${u.status}</div>
+          <div class="presence-user-name">${escHtml(name)} ${meTag}</div>
+          <div class="presence-user-status">${icon} ${status}</div>
           <div class="presence-user-area">${u.area || ''}</div>
           ${agoStr ? `<div class="presence-user-time">${agoStr}</div>` : ''}
         </div>
@@ -4272,12 +4282,14 @@ try {
   }
 
   function stringToColor(str) {
+    str = str || '?';
     let hash = 0;
     for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
     const colors = ['#0C447C','#085041','#3C3489','#633806','#7C3AED','#1D4ED8','#16A34A','#DC2626','#D97706','#0891B2'];
     return colors[Math.abs(hash) % colors.length];
   }
   function escHtml(str) {
+    str = String(str || '');
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
@@ -4481,8 +4493,17 @@ try {
 
   /* ══════════════════════════════════════════════════════════════
      REAL-TIME LISTENERS — the heart of the sync system
+     NOTE: ES modules are always deferred — by the time this code
+     runs, `window load` has usually already fired, so addEventListener
+     would silently miss it. We call startListeners() directly instead.
   ══════════════════════════════════════════════════════════════ */
-  window.addEventListener('load', () => startListeners());
+  // Start listeners immediately (module is already deferred, DOM is ready)
+  // Also guard with load in case this somehow runs very early
+  if (document.readyState === 'complete') {
+    startListeners();
+  } else {
+    window.addEventListener('load', () => startListeners(), { once: true });
+  }
 
   function startListeners() {
 
@@ -4651,7 +4672,9 @@ try {
       if (!allPresence) { renderPresence([]); return; }
 
       const now = Date.now();
-      const users = Object.entries(allPresence).map(([sid, u]) => {
+      const users = Object.entries(allPresence)
+        .filter(([sid, u]) => u && u.name)
+        .map(([sid, u]) => {
         const secAgo = (now - (u.lastSeen || 0)) / 1000;
         return { ...u, sessionId: sid, isOffline: secAgo > 60, lastSeen: u.lastSeen || 0 };
       });
@@ -4678,15 +4701,17 @@ try {
 
   /* ══════════════════════════════════════════════
      BOOT SEQUENCE
+     ES modules are deferred — DOMContentLoaded has already fired
+     by the time this runs. Call directly instead of via listener.
   ══════════════════════════════════════════════ */
-  document.addEventListener('DOMContentLoaded', () => {
+  (function boot() {
     if (!CURRENT_USER) {
       showNameModal(false);
     } else {
       setConnectedBadge();
       initPresence();
     }
-  });
+  })();
 
   ['pagehide', 'beforeunload'].forEach(evt => {
     window.addEventListener(evt, () => {
