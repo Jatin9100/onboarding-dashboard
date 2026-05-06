@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Medi Assist — Corporate Onboarding Improvement Programm</title>
+<title>Medi Assist — Corporate Onboarding Improvement Programme</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -1110,11 +1110,304 @@ body {
   .presence-sidebar { display: none; }
   .root-layout .app-shell { max-width: 100%; }
 }
+
+/* ══════════════════════════════════════════════
+   COLLAPSIBLE SIDEBAR — toggle system
+══════════════════════════════════════════════ */
+.presence-sidebar {
+  transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.22s ease,
+              box-shadow 0.32s ease;
+}
+.presence-sidebar.sidebar-collapsed {
+  width: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+/* Collapse button inside sidebar header */
+.sidebar-collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #93C5FD;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+  margin-left: auto;
+}
+.sidebar-collapse-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+/* Floating expand tab — shown when sidebar is collapsed */
+.sidebar-expand-tab {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 200;
+  background: linear-gradient(135deg, #0C1F3F 0%, #1A3260 100%);
+  color: #93C5FD;
+  border: none;
+  border-radius: 8px 0 0 8px;
+  padding: 14px 8px;
+  cursor: pointer;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: -3px 0 14px rgba(0,0,0,0.18);
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  font-family: var(--font);
+}
+.sidebar-expand-tab:hover {
+  background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%);
+  color: #fff;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.25);
+}
+.sidebar-expand-tab.visible {
+  display: flex;
+}
+.sidebar-expand-tab .expand-icon {
+  font-size: 14px;
+}
+.sidebar-expand-tab .expand-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  color: #93C5FD;
+}
+.sidebar-expand-tab:hover .expand-label {
+  color: #fff;
+}
+
+/* Delete button for ALL rows (not just custom) */
+.ci-row-btn.del-all {
+  color: var(--ink3);
+  border-color: var(--line);
+  background: var(--bg);
+}
+.ci-row-btn.del-all:hover {
+  background: #FEF2F2;
+  color: #DC2626;
+  border-color: #FECACA;
+}
+
+/* ══════════════════════════════════════════════
+   DELETE CONFIRMATION MODAL
+══════════════════════════════════════════════ */
+.del-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(12,31,63,0.55);
+  backdrop-filter: blur(3px);
+  z-index: 9000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.del-modal-overlay.open {
+  opacity: 1; pointer-events: all;
+}
+.del-modal {
+  background: var(--white);
+  border-radius: 14px;
+  width: min(460px, 95vw);
+  box-shadow: 0 24px 60px rgba(12,31,63,0.25), 0 4px 16px rgba(0,0,0,0.1);
+  transform: translateY(10px) scale(0.97);
+  transition: transform 0.22s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+}
+.del-modal-overlay.open .del-modal {
+  transform: translateY(0) scale(1);
+}
+.del-modal-header {
+  background: linear-gradient(135deg, #7F1D1D 0%, #B91C1C 100%);
+  padding: 20px 24px 18px;
+  display: flex; align-items: center; gap: 14px;
+}
+.del-modal-icon {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.del-modal-title {
+  font-size: 15px; font-weight: 700; color: #fff;
+  letter-spacing: -0.2px; line-height: 1.25;
+}
+.del-modal-subtitle {
+  font-size: 11px; color: #FCA5A5; margin-top: 3px;
+}
+.del-modal-body {
+  padding: 22px 24px 20px;
+}
+.del-modal-item-preview {
+  background: #FFF1F2; border: 1px solid #FECACA;
+  border-radius: 8px; padding: 12px 15px;
+  margin-bottom: 16px;
+}
+.del-modal-item-id {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 700;
+  color: #B91C1C; margin-bottom: 4px;
+}
+.del-modal-item-title {
+  font-size: 12.5px; font-weight: 600; color: var(--ink);
+  line-height: 1.4;
+}
+.del-modal-item-meta {
+  font-size: 10.5px; color: var(--ink3); margin-top: 4px;
+}
+.del-modal-desc {
+  font-size: 12px; color: var(--ink2); line-height: 1.55;
+  background: #FFFBEB; border: 1px solid #FDE68A;
+  border-radius: 7px; padding: 10px 13px;
+}
+.del-modal-desc strong { color: #92400E; }
+.del-modal-footer {
+  display: flex; gap: 10px; justify-content: flex-end;
+  padding: 14px 24px 20px;
+  border-top: 1px solid var(--line2);
+}
+.del-btn-cancel {
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  padding: 9px 20px; border-radius: 7px;
+  border: 1.5px solid var(--line); background: var(--bg);
+  color: var(--ink2); cursor: pointer;
+  transition: all 0.15s;
+}
+.del-btn-cancel:hover { background: #E5E7EB; border-color: #9CA3AF; }
+.del-btn-trash {
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  padding: 9px 20px; border-radius: 7px;
+  border: none;
+  background: linear-gradient(135deg, #DC2626, #B91C1C);
+  color: #fff; cursor: pointer;
+  display: flex; align-items: center; gap: 7px;
+  box-shadow: 0 2px 8px rgba(185,28,28,0.3);
+  transition: all 0.15s;
+}
+.del-btn-trash:hover {
+  background: linear-gradient(135deg, #B91C1C, #991B1B);
+  box-shadow: 0 4px 14px rgba(185,28,28,0.4);
+  transform: translateY(-1px);
+}
+.del-btn-trash:active { transform: translateY(0); }
+
+/* ══════════════════════════════════════════════
+   TRASH VIEW — inside Master Tracker
+══════════════════════════════════════════════ */
+.trash-toggle-bar {
+  display: flex; align-items: center; gap: 6px;
+  background: #F9FAFB; border: 1px solid var(--line2);
+  border-radius: 8px; padding: 4px;
+  margin-bottom: 14px; width: fit-content;
+}
+.trash-toggle-btn {
+  font-family: var(--font); font-size: 11px; font-weight: 600;
+  padding: 6px 16px; border-radius: 6px; border: none;
+  cursor: pointer; transition: all 0.18s;
+  display: flex; align-items: center; gap: 5px;
+  color: var(--ink3); background: transparent;
+}
+.trash-toggle-btn.active {
+  background: var(--white); color: var(--ink);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.trash-toggle-btn.active-trash {
+  background: #FEF2F2; color: #B91C1C;
+  box-shadow: 0 1px 4px rgba(185,28,28,0.15);
+}
+.trash-count-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 9px; font-size: 10px; font-weight: 700;
+  background: #FECACA; color: #B91C1C;
+  font-family: var(--mono);
+}
+
+.trash-table-wrap { margin-top: 8px; }
+.trash-header-row {
+  background: #FFF1F2;
+  border: 1px solid #FECACA;
+  border-radius: 8px 8px 0 0;
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11.5px; font-weight: 700; color: #B91C1C;
+}
+.trash-empty {
+  text-align: center; padding: 48px 20px;
+  color: var(--ink3); font-size: 12px; font-style: italic;
+  background: #FAFAFA; border: 1px solid var(--line2);
+  border-top: none; border-radius: 0 0 8px 8px;
+}
+.trash-item-row {
+  border: 1px solid #FED7AA; border-top: none;
+  background: #FFFBF5; padding: 12px 16px;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  align-items: center; gap: 12px;
+  transition: background 0.15s;
+}
+.trash-item-row:last-child { border-radius: 0 0 8px 8px; }
+.trash-item-row:hover { background: #FFF7ED; }
+.trash-item-id {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  background: #FFEDD5; color: #C2410C; border: 1px solid #FED7AA;
+  border-radius: 3px; padding: 2px 7px; white-space: nowrap;
+}
+.trash-item-title {
+  font-size: 12px; font-weight: 600; color: var(--ink2);
+  line-height: 1.4; text-decoration: line-through;
+  text-decoration-color: #FDA4AF;
+}
+.trash-item-meta {
+  font-size: 10px; color: var(--ink3); margin-top: 2px;
+  font-family: var(--mono); text-decoration: none;
+}
+.trash-item-type {
+  font-size: 9px; font-weight: 700; padding: 2px 6px;
+  border-radius: 3px; white-space: nowrap;
+  font-family: var(--mono);
+}
+.trash-btn-restore {
+  font-family: var(--font); font-size: 10.5px; font-weight: 600;
+  padding: 5px 13px; border-radius: 5px;
+  border: 1.5px solid #16A34A; background: #F0FDF4;
+  color: #15803D; cursor: pointer; white-space: nowrap;
+  transition: all 0.15s;
+}
+.trash-btn-restore:hover { background: #DCFCE7; border-color: #15803D; }
+.trash-btn-perma {
+  font-family: var(--font); font-size: 10.5px; font-weight: 600;
+  padding: 5px 10px; border-radius: 5px;
+  border: 1.5px solid #FECACA; background: #FFF1F2;
+  color: #DC2626; cursor: pointer; white-space: nowrap;
+  transition: all 0.15s;
+}
+.trash-btn-perma:hover { background: #FEE2E2; border-color: #DC2626; }
 </style>
 </head>
 <body>
 <!-- ── ROOT LAYOUT: main content + presence sidebar ── -->
 <div class="root-layout">
+
+<!-- Floating expand tab (visible when sidebar is collapsed) -->
+<button class="sidebar-expand-tab" id="sidebar-expand-tab" onclick="togglePresenceSidebar()" title="Show Active Users">
+  <span class="expand-icon">👥</span>
+  <span class="expand-label">Users</span>
+</button>
 
 <div class="app-shell">
 
@@ -2045,6 +2338,16 @@ body {
     </div>
   </div>
 
+  <!-- Trash toggle bar -->
+  <div class="trash-toggle-bar">
+    <button id="mt-trash-btn-active" class="trash-toggle-btn active" onclick="toggleTrashView(false)">
+      ✅ Active Items
+    </button>
+    <button id="mt-trash-btn-trash" class="trash-toggle-btn" onclick="toggleTrashView(true)">
+      🗑 Trash <span class="trash-count-badge" id="trash-count-badge">0</span>
+    </button>
+  </div>
+
   <!-- Inline KPI strip for Master Tracker -->
   <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px" id="mt-kpi-strip">
     <div class="trk-kpi kpi-total" style="padding:10px 14px">
@@ -2107,24 +2410,35 @@ body {
     <span style="font-size:10px;color:var(--ink3);font-family:var(--mono);margin-left:auto" id="mt-row-count"></span>
   </div>
 
-  <div class="trk-table-wrap">
-    <table class="trk-table">
-      <thead>
-        <tr>
-          <th style="cursor:pointer" onclick="sortMaster('id')">ID ↕</th>
-          <th>Title / Description</th>
-          <th style="cursor:pointer" onclick="sortMaster('type')">Type ↕</th>
-          <th style="cursor:pointer" onclick="sortMaster('phase')">Phase ↕</th>
-          <th style="cursor:pointer" onclick="sortMaster('owner')">Owner ↕</th>
-          <th style="cursor:pointer" onclick="sortMaster('priority')">Priority ↕</th>
-          <th>Theme / Tag</th>
-          <th style="cursor:pointer" onclick="sortMaster('status')">Status ↕</th>
-          <th>Notes / Measure</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="master-tbody"></tbody>
-    </table>
+  <!-- ACTIVE ITEMS VIEW -->
+  <div id="mt-active-view">
+    <div class="trk-table-wrap">
+      <table class="trk-table">
+        <thead>
+          <tr>
+            <th style="cursor:pointer" onclick="sortMaster('id')">ID ↕</th>
+            <th>Title / Description</th>
+            <th style="cursor:pointer" onclick="sortMaster('type')">Type ↕</th>
+            <th style="cursor:pointer" onclick="sortMaster('phase')">Phase ↕</th>
+            <th style="cursor:pointer" onclick="sortMaster('owner')">Owner ↕</th>
+            <th style="cursor:pointer" onclick="sortMaster('priority')">Priority ↕</th>
+            <th>Theme / Tag</th>
+            <th style="cursor:pointer" onclick="sortMaster('status')">Status ↕</th>
+            <th>Notes / Measure</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="master-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TRASH VIEW -->
+  <div id="mt-trash-view" style="display:none">
+    <div class="trash-header-row">
+      🗑 Trash — Deleted Items · Restore to bring back or delete forever
+    </div>
+    <div id="trash-tbody"></div>
   </div>
 </div>
 
@@ -2245,6 +2559,10 @@ const MASTER_DATA = [
 ];
 window.MASTER_DATA = MASTER_DATA;
 
+/* ── TRASHED_DATA — soft-deleted items (hidden from all active views) ── */
+const TRASHED_DATA = [];
+window.TRASHED_DATA = TRASHED_DATA;
+
 /* ═══════════════════════════════════════════════════════════════
    STATE — localStorage persistence
 ═══════════════════════════════════════════════════════════════ */
@@ -2335,7 +2653,11 @@ window.actLog = actLog;
    HELPERS
 ═══════════════════════════════════════════════════════════════ */
 function allStatuses() {
-  return MASTER_DATA.map(item => ({id: item.id, type: item.type, s: STATE[item.id] || 'Open'}));
+  // MASTER_DATA already excludes trashed items (Firebase listener filters them).
+  // The explicit guard here prevents any stale trashed item from affecting KPIs.
+  return MASTER_DATA
+    .filter(item => !item.trashed)
+    .map(item => ({id: item.id, type: item.type, s: STATE[item.id] || 'Open'}));
 }
 function cnt(arr, val) { return arr.filter(x => x === val).length; }
 function pct(n, d) { return d ? Math.round(n / d * 100) : 0; }
@@ -2447,6 +2769,25 @@ function sortMaster(key) {
 }
 
 function renderMasterTable() {
+  // Update trash toggle UI state
+  const btnActive = document.getElementById('mt-trash-btn-active');
+  const btnTrash  = document.getElementById('mt-trash-btn-trash');
+  const trashBadge = document.getElementById('trash-count-badge');
+  if (btnActive) btnActive.classList.toggle('active', !_showingTrash);
+  if (btnTrash)  btnTrash.classList.toggle('active-trash', _showingTrash);
+  if (trashBadge) trashBadge.textContent = TRASHED_DATA.length;
+
+  // Show/hide appropriate view
+  const activeView = document.getElementById('mt-active-view');
+  const trashView  = document.getElementById('mt-trash-view');
+  if (activeView) activeView.style.display = _showingTrash ? 'none' : '';
+  if (trashView)  trashView.style.display  = _showingTrash ? '' : 'none';
+
+  if (_showingTrash) {
+    renderTrashTable();
+    return;
+  }
+
   const typeF     = document.getElementById('mt-type')?.value || '';
   const phaseF    = document.getElementById('mt-phase')?.value || '';
   const ownerF    = document.getElementById('mt-owner')?.value || '';
@@ -2455,7 +2796,9 @@ function renderMasterTable() {
   const themeF    = document.getElementById('mt-theme')?.value || '';
   const qwF       = document.getElementById('mt-qw')?.value || '';
 
+  // CRITICAL: exclude trashed items from active view
   let rows = MASTER_DATA.filter(item => {
+    if (item.trashed) return false;
     const s = STATE[item.id] || 'Open';
     if (typeF     && item.type !== typeF) return false;
     if (phaseF    && item.phase !== phaseF) return false;
@@ -2502,7 +2845,7 @@ function renderMasterTable() {
       <td>
         <div class="ci-row-actions">
           <button class="ci-row-btn" onclick="openEditModal('${item.id}')" title="Edit">✏️</button>
-          ${item.isCustom ? `<button class="ci-row-btn del" onclick="deleteItem('${item.id}')" title="Delete">🗑</button>` : ''}
+          <button class="ci-row-btn del del-all" onclick="showDeleteConfirm('${item.id}')" title="Move to Trash">🗑</button>
         </div>
       </td>
     </tr>`;
@@ -3660,30 +4003,206 @@ function ciSaveEdit() {
 }
 
 /* ══════════════════════════════════════════════
-   DELETE ITEM
+   TRASH SYSTEM — soft delete architecture
+   All delete operations go through showDeleteConfirm → executeTrash.
+   Cancel is guaranteed safe: modal only calls executeTrash on confirm.
+   Firebase module below overrides executeTrash/restoreItem/permanentDeleteItem
+   to write the actual /items patch and broadcast to all users.
 ══════════════════════════════════════════════ */
-function deleteItem(id) {
+
+let _pendingDeleteId = null;
+let _showingTrash = false;
+
+/* STEP 1: Show the custom confirmation modal (no deletion here) */
+function showDeleteConfirm(id) {
   const item = MASTER_DATA.find(x => x.id === id);
   if (!item) return;
-  if (!confirm(`Delete "${item.title}"?\n\nThis cannot be undone.`)) return;
+  _pendingDeleteId = id;
 
+  const typeLabel = item.type === 'task' ? 'Initiative / Task' : 'Pain Point';
+  const phaseStr  = item.phase ? ` · Phase ${item.phase}d` : '';
+  const ownerStr  = item.owner ? ` · Owner: ${item.owner}` : '';
+
+  document.getElementById('del-modal-item-id').textContent    = item.id;
+  document.getElementById('del-modal-item-title').textContent = item.title;
+  document.getElementById('del-modal-item-meta').textContent  = typeLabel + phaseStr + ownerStr;
+
+  const overlay = document.getElementById('del-modal-overlay');
+  overlay.classList.add('open');
+}
+
+/* Cancel — closes modal, does NOTHING else */
+function cancelDelete() {
+  _pendingDeleteId = null;
+  document.getElementById('del-modal-overlay').classList.remove('open');
+}
+
+/* STEP 2: Called ONLY from the "Move to Trash" button in the modal */
+function confirmDeleteFromModal() {
+  const id = _pendingDeleteId;
+  cancelDelete(); // close modal first
+  if (!id) return;
+  executeTrash(id);
+}
+
+/* ── Core soft-delete logic ─────────────────────────────────────
+   Moves item to TRASHED_DATA, removes from MASTER_DATA.
+   Firebase override below patches /items with trash metadata
+   so ALL connected users see the change instantly.
+─────────────────────────────────────────────────────────────── */
+function executeTrash(id) {
+  const item = MASTER_DATA.find(x => x.id === id);
+  if (!item) return;
+
+  const now = new Date();
+  const ts  = now.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+
+  // Mark item as trashed in-place (Firebase listener will rebuild on confirmation)
+  item.trashed    = true;
+  item.trashedAt  = now.toISOString();
+  item.trashedBy  = typeof CURRENT_USER !== 'undefined' ? CURRENT_USER : 'Unknown';
+
+  // Move from MASTER_DATA → TRASHED_DATA (optimistic local update)
   const idx = MASTER_DATA.findIndex(x => x.id === id);
-  if (idx > -1) MASTER_DATA.splice(idx, 1);
-  delete STATE[id];
-  saveState(STATE);
+  if (idx > -1) {
+    TRASHED_DATA.unshift(MASTER_DATA[idx]);
+    MASTER_DATA.splice(idx, 1);
+  }
 
-  // Remove from custom items if custom
+  // Remove from CUSTOM_ITEMS if custom
   const ci = CUSTOM_ITEMS.findIndex(x => x.id === id);
   if (ci > -1) CUSTOM_ITEMS.splice(ci, 1);
-  saveCustomItems();
 
-  const ts = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
-  actLog.unshift({text:`<strong>${id}</strong> deleted`, time:'Just now, '+ts, col:'#DC2626'});
+  // Activity log
+  actLog.unshift({
+    text: `<strong>${id}</strong> moved to Trash by <strong>${item.trashedBy}</strong>`,
+    time: 'Just now, ' + ts,
+    col:  '#DC2626',
+  });
   if (actLog.length > 15) actLog.pop();
 
   populateOwners();
   updateAllDerivedUI();
-  showToast(`🗑 ${id} deleted`);
+  showToast(`🗑 ${id} moved to Trash — can be restored anytime`);
+
+  // Auto-switch to trash view so user can immediately see/restore the item
+  if (!_showingTrash) {
+    setTimeout(() => {
+      _showingTrash = true;
+      renderMasterTable();
+    }, 400);
+  }
+  // Note: Firebase module override below writes the patch to /items,
+  // which propagates to ALL connected users via the realtime listener.
+}
+
+/* Alias — legacy call-sites (Firebase override wraps this) */
+function deleteItem(id) { showDeleteConfirm(id); }
+
+/* ── Restore item from Trash ─────────────────────────────────── */
+function restoreItem(id) {
+  const item = TRASHED_DATA.find(x => x.id === id);
+  if (!item) return;
+
+  // Clear trash flags
+  delete item.trashed;
+  delete item.trashedAt;
+  delete item.trashedBy;
+
+  // Move from TRASHED_DATA → MASTER_DATA
+  const ti = TRASHED_DATA.findIndex(x => x.id === id);
+  if (ti > -1) {
+    MASTER_DATA.push(TRASHED_DATA[ti]);
+    TRASHED_DATA.splice(ti, 1);
+  }
+
+  // Re-sort MASTER_DATA
+  MASTER_DATA.sort((a, b) => {
+    if (a.isCustom !== b.isCustom) return a.isCustom ? 1 : -1;
+    return String(a.id).localeCompare(String(b.id), undefined, {numeric: true});
+  });
+
+  if (item.isCustom) CUSTOM_ITEMS.push(item);
+
+  const ts = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  actLog.unshift({
+    text: `<strong>${id}</strong> restored from Trash by <strong>${typeof CURRENT_USER !== 'undefined' ? CURRENT_USER : 'Unknown'}</strong>`,
+    time: 'Just now, ' + ts,
+    col:  '#16A34A',
+  });
+  if (actLog.length > 15) actLog.pop();
+
+  populateOwners();
+  updateAllDerivedUI();
+  showToast(`✅ ${id} restored to active tracker`);
+  // Note: Firebase override patches /items to remove trash flags → broadcasts to all.
+}
+
+/* ── Permanent delete (only from Trash view) ─────────────────── */
+function permanentDeleteItem(id) {
+  const item = TRASHED_DATA.find(x => x.id === id);
+  if (!item) return;
+  if (!confirm(`Permanently delete "${item.title}"?\n\nThis CANNOT be undone. The item will be gone forever.`)) return;
+
+  const ti = TRASHED_DATA.findIndex(x => x.id === id);
+  if (ti > -1) TRASHED_DATA.splice(ti, 1);
+  delete STATE[id];
+
+  const ts = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  actLog.unshift({
+    text: `<strong>${id}</strong> permanently deleted by <strong>${typeof CURRENT_USER !== 'undefined' ? CURRENT_USER : 'Unknown'}</strong>`,
+    time: 'Just now, ' + ts,
+    col:  '#7F1D1D',
+  });
+  if (actLog.length > 15) actLog.pop();
+
+  updateAllDerivedUI();
+  showToast(`💀 ${id} permanently deleted`);
+  // Note: Firebase override writes null to /items/{id} → broadcasts to all.
+}
+
+/* ── Trash view toggle ───────────────────────────────────────── */
+function toggleTrashView(showTrash) {
+  _showingTrash = showTrash;
+  renderMasterTable();
+}
+
+/* ── Render trash table ──────────────────────────────────────── */
+function renderTrashTable() {
+  const tbody = document.getElementById('trash-tbody');
+  if (!tbody) return;
+
+  // Update badge
+  const badge = document.getElementById('trash-count-badge');
+  if (badge) badge.textContent = TRASHED_DATA.length;
+
+  if (!TRASHED_DATA.length) {
+    tbody.innerHTML = '<div class="trash-empty">🗑 Trash is empty — no deleted items</div>';
+    return;
+  }
+
+  tbody.innerHTML = TRASHED_DATA.map(item => {
+    const typeTag = item.type === 'task'
+      ? `<span class="trash-item-type" style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE">TASK</span>`
+      : `<span class="trash-item-type" style="background:#FEF2F2;color:#991B1B;border:1px solid #FECACA">PAIN PT</span>`;
+    const trashedAt  = item.trashedAt
+      ? new Date(item.trashedAt).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'})
+      : '—';
+    const trashedBy  = item.trashedBy || 'Unknown';
+
+    return `<div class="trash-item-row">
+      <div>
+        <div class="trash-item-id">${item.id}</div>
+        <div style="margin-top:4px">${typeTag}</div>
+      </div>
+      <div>
+        <div class="trash-item-title">${item.title}</div>
+        <div class="trash-item-meta">Deleted ${trashedAt} · by ${trashedBy} · Owner: ${item.owner || '—'}</div>
+      </div>
+      <button class="trash-btn-restore" onclick="restoreItem('${item.id}')">↩ Restore</button>
+      <button class="trash-btn-perma" onclick="permanentDeleteItem('${item.id}')" title="Delete forever">✕ Delete Forever</button>
+    </div>`;
+  }).join('');
 }
 
 /* ══════════════════════════════════════════════
@@ -3695,6 +4214,51 @@ document.addEventListener('keydown', e => {
     closeEditModal();
   }
 });
+
+/* ══════════════════════════════════════════════
+   COLLAPSIBLE ACTIVE USERS PANEL
+══════════════════════════════════════════════ */
+function togglePresenceSidebar() {
+  const sidebar  = document.getElementById('presence-sidebar');
+  const expandTab = document.getElementById('sidebar-expand-tab');
+  if (!sidebar) return;
+
+  const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+  if (isCollapsed) {
+    // Expand
+    sidebar.classList.remove('sidebar-collapsed');
+    if (expandTab) expandTab.classList.remove('visible');
+    localStorage.setItem('ob_sidebar_collapsed', '0');
+  } else {
+    // Collapse
+    sidebar.classList.add('sidebar-collapsed');
+    if (expandTab) expandTab.classList.add('visible');
+    localStorage.setItem('ob_sidebar_collapsed', '1');
+  }
+}
+
+// Restore sidebar state from localStorage on load
+(function restoreSidebarState() {
+  const collapsed = localStorage.getItem('ob_sidebar_collapsed') === '1';
+  if (collapsed) {
+    const sidebar   = document.getElementById('presence-sidebar');
+    const expandTab = document.getElementById('sidebar-expand-tab');
+    if (sidebar)   sidebar.classList.add('sidebar-collapsed');
+    if (expandTab) expandTab.classList.add('visible');
+  }
+})();
+window.togglePresenceSidebar = togglePresenceSidebar;
+
+/* Expose trash system functions globally (called from HTML onclick) */
+window.showDeleteConfirm    = showDeleteConfirm;
+window.cancelDelete         = cancelDelete;
+window.confirmDeleteFromModal = confirmDeleteFromModal;
+window.executeTrash         = executeTrash;
+window.restoreItem          = restoreItem;
+window.permanentDeleteItem  = permanentDeleteItem;
+window.renderTrashTable     = renderTrashTable;
+window.toggleTrashView      = toggleTrashView;
+window.deleteItem           = deleteItem;
 </script>
 </div><!-- /.app-shell -->
 
@@ -3703,11 +4267,16 @@ document.addEventListener('keydown', e => {
 ═══════════════════════════════════════════════════ -->
 <div class="presence-sidebar" id="presence-sidebar">
   <div class="presence-header">
-    <div class="presence-title">
-      <span class="presence-pulse"></span>
-      Live Users
+    <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+      <div>
+        <div class="presence-title">
+          <span class="presence-pulse"></span>
+          Live Users
+        </div>
+        <div class="presence-online-count" id="presence-count">0 online</div>
+      </div>
+      <button class="sidebar-collapse-btn" onclick="togglePresenceSidebar()" title="Collapse panel" aria-label="Collapse Active Users panel">‹</button>
     </div>
-    <div class="presence-online-count" id="presence-count">0 online</div>
   </div>
   <div class="presence-list" id="presence-list">
     <div class="presence-empty">Waiting for users…</div>
@@ -4073,15 +4642,99 @@ try {
     }
   };
 
-  /* Override deleteItem — remove item from /items AND /state */
-  const _origDeleteItem = window.deleteItem;
-  if (_origDeleteItem) {
-    window.deleteItem = function(id) {
-      _origDeleteItem(id);
-      // Surgically remove from Firebase (null = delete in RTDB)
-      update(ref(db, 'items'), { [id]: null }).catch(e => console.warn('[FB] delete item error', e));
-      update(ref(db, 'state'), { [id]: null }).catch(e => console.warn('[FB] delete state error', e));
+  /* ══════════════════════════════════════════════════════════════
+     FIREBASE TRASH SYSTEM OVERRIDES
+     These wrap the local executeTrash / restoreItem / permanentDeleteItem
+     functions to add Firebase persistence + realtime broadcast.
+     
+     CANCEL BUG FIX: The confirm modal is now a custom HTML modal.
+     confirmDeleteFromModal() is the ONLY entry point that calls executeTrash().
+     The Firebase override of executeTrash() does NOT show any dialog —
+     it only adds the Firebase write AFTER the local logic runs.
+     Cancel always calls cancelDelete() which does nothing to Firebase.
+  ══════════════════════════════════════════════════════════════ */
+
+  /* Override executeTrash — soft-delete: marks item as trashed in /items */
+  const _origExecuteTrash = window.executeTrash;
+  if (_origExecuteTrash) {
+    window.executeTrash = function(id) {
+      // Run local soft-delete first (optimistic UI — moves item to TRASHED_DATA)
+      _origExecuteTrash(id);
+
+      // Firebase soft-delete: patch the item with trash metadata.
+      // null would hard-delete; instead we set trashed:true so the item
+      // survives in /items and can be restored, while ALL listeners filter it out.
+      const item = (window.TRASHED_DATA || []).find(x => x.id === id);
+      if (item) {
+        update(ref(db, 'items'), { [id]: item })
+          .catch(e => console.warn('[FB] trash item error', e));
+        // Remove from /state so it doesn't count in KPIs on other clients
+        update(ref(db, 'state'), { [id]: null })
+          .catch(e => console.warn('[FB] trash state error', e));
+      }
+
+      // Activity log → Firebase (broadcasts to all users)
+      const ts = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+      set(ref(db, 'actlog/' + Date.now()), {
+        text: `<strong>${id}</strong> moved to Trash by <strong>${CURRENT_USER || 'Unknown'}</strong>`,
+        time: 'Just now, ' + ts,
+        col:  '#DC2626',
+      }).catch(() => {});
+
+      if (_presenceRef) update(_presenceRef, { status: 'Active', lastSeen: Date.now() }).catch(() => {});
+    };
+  }
+
+  /* Override restoreItem — clears trash flags in /items, re-adds to /state */
+  const _origRestoreItem = window.restoreItem;
+  if (_origRestoreItem) {
+    window.restoreItem = function(id) {
+      _origRestoreItem(id); // local optimistic restore
+
+      // After local restore, item is back in MASTER_DATA — write it to Firebase
+      const item = (window.MASTER_DATA || []).find(x => x.id === id);
+      if (item) {
+        update(ref(db, 'items'), { [id]: item })
+          .catch(e => console.warn('[FB] restore item error', e));
+        // Re-add to /state so it appears in KPIs on all clients
+        const currentStatus = (window.STATE || {})[id] || 'Open';
+        update(ref(db, 'state'), { [id]: currentStatus })
+          .catch(e => console.warn('[FB] restore state error', e));
+      }
+
+      // Activity log
+      const ts = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+      set(ref(db, 'actlog/' + Date.now()), {
+        text: `<strong>${id}</strong> restored from Trash by <strong>${CURRENT_USER || 'Unknown'}</strong>`,
+        time: 'Just now, ' + ts,
+        col:  '#16A34A',
+      }).catch(() => {});
+
+      if (_presenceRef) update(_presenceRef, { status: 'Active', lastSeen: Date.now() }).catch(() => {});
+    };
+  }
+
+  /* Override permanentDeleteItem — true null-delete from /items */
+  const _origPermanentDeleteItem = window.permanentDeleteItem;
+  if (_origPermanentDeleteItem) {
+    window.permanentDeleteItem = function(id) {
+      _origPermanentDeleteItem(id); // shows confirm + local removal
+
+      // True removal from Firebase (null = delete in RTDB)
+      update(ref(db, 'items'), { [id]: null })
+        .catch(e => console.warn('[FB] permanent delete error', e));
+      update(ref(db, 'state'), { [id]: null })
+        .catch(e => console.warn('[FB] permanent delete state error', e));
       delete _remoteState[id];
+
+      const ts = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+      set(ref(db, 'actlog/' + Date.now()), {
+        text: `<strong>${id}</strong> permanently deleted by <strong>${CURRENT_USER || 'Unknown'}</strong>`,
+        time: 'Just now, ' + ts,
+        col:  '#7F1D1D',
+      }).catch(() => {});
+
+      if (_presenceRef) update(_presenceRef, { status: 'Active', lastSeen: Date.now() }).catch(() => {});
     };
   }
 
@@ -4156,15 +4809,22 @@ try {
       /* ── SUBSEQUENT LOADS: rebuild MASTER_DATA from Firebase ── */
       const MASTER_DATA  = window.MASTER_DATA;
       const CUSTOM_ITEMS = window.CUSTOM_ITEMS;
+      const TRASHED_DATA = window.TRASHED_DATA;
       if (!MASTER_DATA || !CUSTOM_ITEMS) { _itemsFired = true; tryRender(); return; }
 
       // Rebuild arrays in-place (preserves references held by other code)
       MASTER_DATA.length  = 0;
       CUSTOM_ITEMS.length = 0;
+      if (TRASHED_DATA) TRASHED_DATA.length = 0;
 
       Object.values(remote).forEach(item => {
-        MASTER_DATA.push(item);
-        if (item.isCustom) CUSTOM_ITEMS.push(item);
+        if (item.trashed) {
+          // Route soft-deleted items to TRASHED_DATA only
+          if (TRASHED_DATA) TRASHED_DATA.push(item);
+        } else {
+          MASTER_DATA.push(item);
+          if (item.isCustom) CUSTOM_ITEMS.push(item);
+        }
       });
 
       // Sort: built-ins first (by ID alpha), then custom (by createdAt)
@@ -4322,6 +4982,38 @@ try {
   if (b) b.innerHTML = '🔴 Offline mode';
 }
 </script>
+
+<!-- ══════════════════════════════════════════════════
+     DELETE CONFIRMATION MODAL (Custom — replaces browser confirm())
+     Cancel is absolutely safe: only the "Move to Trash" button
+     inside this modal calls confirmDeleteFromModal().
+═══════════════════════════════════════════════════ -->
+<div class="del-modal-overlay" id="del-modal-overlay" onclick="if(event.target===this)cancelDelete()">
+  <div class="del-modal" role="dialog" aria-modal="true" aria-labelledby="del-modal-title">
+    <div class="del-modal-header">
+      <div class="del-modal-icon">🗑</div>
+      <div>
+        <div class="del-modal-title" id="del-modal-title">Move to Trash?</div>
+        <div class="del-modal-subtitle">Item will be hidden but can be restored anytime</div>
+      </div>
+    </div>
+    <div class="del-modal-body">
+      <div class="del-modal-item-preview">
+        <div class="del-modal-item-id" id="del-modal-item-id">—</div>
+        <div class="del-modal-item-title" id="del-modal-item-title">—</div>
+        <div class="del-modal-item-meta" id="del-modal-item-meta">—</div>
+      </div>
+      <div class="del-modal-desc">
+        This item will be moved to <strong>Trash</strong> and hidden from the Master Tracker, Kanban, Dashboard, and all KPI calculations.<br><br>
+        You can <strong>restore it anytime</strong> from the Trash tab inside Master Tracker. All connected users will see this change instantly.
+      </div>
+    </div>
+    <div class="del-modal-footer">
+      <button class="del-btn-cancel" onclick="cancelDelete()">Cancel — Keep Item</button>
+      <button class="del-btn-trash" onclick="confirmDeleteFromModal()">🗑 Move to Trash</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
