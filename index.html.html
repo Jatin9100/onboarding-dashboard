@@ -1,0 +1,3774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medi Assist — Corporate Onboarding Improvement Programme</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --am:   #0C447C; --am-bg: #E6F1FB; --am-mid: #DCEEFB; --am-bdr: #85B7EB;
+  --ob:   #085041; --ob-bg: #E1F5EE; --ob-mid: #C8F0DF; --ob-bdr: #5DCAA5;
+  --it:   #3C3489; --it-bg: #EEEDFE; --it-mid: #DDDCFC; --it-bdr: #AFA9EC;
+  --en:   #633806; --en-bg: #FAEEDA; --en-mid: #FAE8C0; --en-bdr: #EF9F27;
+  --red:  #B91C1C; --red-bg: #FEF2F2; --red-bdr: #FCA5A5;
+  --ora:  #92400E; --ora-bg: #FDF3DC; --ora-bdr: #BA7517;
+  --grn:  #27500A; --grn-bg: #EAF3DE; --grn-bdr: #639922;
+  --q-bg: #F0FDF4; --q-bdr: #16A34A; --q-txt: #14532D;
+  --f-bg: #EFF6FF; --f-bdr: #2563EB; --f-txt: #1E3A8A;
+  --s-bg: #FAF5FF; --s-bdr: #7C3AED; --s-txt: #4C1D95;
+  --ink: #111827; --ink2: #374151; --ink3: #6B7280;
+  --line: #D1D5DB; --line2: #E5E7EB;
+  --bg: #F9FAFB; --white: #FFFFFF;
+  --font: 'IBM Plex Sans', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: #E8ECF2;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* App shell */
+.app-shell {
+  background: var(--white);
+  min-height: 100vh;
+  max-width: 1600px;
+  margin: 0 auto;
+  box-shadow: 0 0 40px rgba(0,0,0,0.08);
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: linear-gradient(135deg, #0C1F3F 0%, #1A3260 100%);
+  color: #fff;
+  padding: 28px 40px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 3px solid #1D4ED8;
+}
+.page-header h1 {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+.page-header .sub {
+  font-size: 12px;
+  color: #93C5FD;
+  margin-top: 5px;
+  font-weight: 400;
+}
+.page-header .meta {
+  text-align: right;
+  font-size: 11px;
+  color: #93C5FD;
+  font-family: var(--mono);
+  line-height: 1.6;
+}
+
+/* ── SECTION TABS ── */
+.tabs {
+  display: flex;
+  gap: 0;
+  background: #0C1F3F;
+  border-bottom: 1px solid #1E3A8A;
+  padding: 0 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab-btn {
+  padding: 12px 22px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #93C5FD;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  font-family: var(--font);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.tab-btn.active { color: #fff; border-bottom-color: #60A5FA; background: rgba(255,255,255,0.04); }
+.tab-btn:hover:not(.active) { color: #BFDBFE; background: rgba(255,255,255,0.03); }
+
+/* ── SECTION PANELS ── */
+.panel {
+  display: none !important;
+  padding: 28px 40px 60px;
+  min-height: calc(100vh - 120px);
+  box-sizing: border-box;
+}
+.panel.active {
+  display: block !important;
+}
+
+/* ── SWIMLANE FLOWCHART ── */
+.flow-wrap { overflow-x: auto; padding-bottom: 8px; }
+.flow-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 1060px;
+  table-layout: fixed;
+}
+
+.col-stage  { width: 80px; }
+.col-dept   { /* flex */ }
+
+.th-stage {
+  background: #0C1F3F;
+  color: #93C5FD;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 10px 6px;
+  text-align: center;
+  border-right: 2px solid #1E3A8A;
+  border-bottom: 2px solid #1E3A8A;
+}
+.th-am  { background: var(--am-bg);  color: var(--am);  font-size:12px; font-weight:600; padding:10px 12px; text-align:center; border:1px solid var(--line); border-bottom:2px solid var(--am); }
+.th-ob  { background: var(--ob-bg);  color: var(--ob);  font-size:12px; font-weight:600; padding:10px 12px; text-align:center; border:1px solid var(--line); border-bottom:2px solid var(--ob); }
+.th-it  { background: var(--it-bg);  color: var(--it);  font-size:12px; font-weight:600; padding:10px 12px; text-align:center; border:1px solid var(--line); border-bottom:2px solid var(--it); }
+.th-en  { background: var(--en-bg);  color: var(--en);  font-size:12px; font-weight:600; padding:10px 12px; text-align:center; border:1px solid var(--line); border-bottom:2px solid var(--en); }
+
+.td-stage {
+  background: #0C1F3F;
+  vertical-align: middle;
+  text-align: center;
+  padding: 10px 6px;
+  border-right: 2px solid #1E3A8A;
+  border-top: 1px solid #1E3A8A;
+}
+.stage-num {
+  display: inline-block;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 36px;
+  margin-bottom: 6px;
+}
+.stage-label {
+  font-size: 9.5px;
+  color: #93C5FD;
+  font-weight: 500;
+  line-height: 1.3;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.s1n { background: var(--am-bg); color: var(--am); }
+.s2n { background: var(--ob-bg); color: var(--ob); }
+.s3n { background: var(--it-bg); color: var(--it); }
+.s4n { background: var(--en-bg); color: var(--en); }
+.s5n { background: #FAECE7;      color: #712B13; }
+.s6n { background: var(--grn-bg); color: var(--grn); }
+
+.td-cell {
+  vertical-align: top;
+  padding: 14px 12px;
+  border: 1px solid var(--line2);
+  min-width: 0;
+}
+.td-am { background: #FAFCFF; }
+.td-ob { background: #F6FDF9; }
+.td-it { background: #F8F7FF; }
+.td-en { background: #FDFAF3; }
+
+/* ── PROCESS BOXES ── */
+.box {
+  border-radius: 5px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  position: relative;
+}
+.box b { display: block; font-weight: 600; font-size: 11px; margin-bottom: 2px; }
+.box span { font-size: 10.5px; opacity: 0.8; display: block; }
+
+.box-am { background: var(--am-mid); border: 1px solid var(--am-bdr); color: var(--am); }
+.box-ob { background: var(--ob-mid); border: 1px solid var(--ob-bdr); color: var(--ob); }
+.box-it { background: var(--it-mid); border: 1px solid var(--it-bdr); color: var(--it); }
+.box-en { background: var(--en-mid); border: 1px solid var(--en-bdr); color: var(--en); }
+.box-out { background: var(--grn-bg); border: 1px solid var(--grn-bdr); color: var(--grn); }
+.box-none { background: #F3F4F6; border: 1px dashed var(--line); color: var(--ink3); font-style: italic; }
+
+.rework {
+  background: var(--red-bg);
+  border: 1px dashed var(--red-bdr);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-size: 11px;
+  color: var(--red);
+  margin-bottom: 8px;
+}
+.rework b { font-weight: 600; display: block; margin-bottom: 2px; }
+
+.decision {
+  background: var(--ora-bg);
+  border: 1px solid var(--ora-bdr);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-size: 11px;
+  color: var(--ora);
+  margin-bottom: 8px;
+}
+.decision b { font-weight: 600; display: block; margin-bottom: 2px; }
+
+.arrow { text-align: center; color: var(--ink3); font-size: 16px; margin: 2px 0; line-height: 1; }
+
+/* Pain-point badge */
+.pp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--red);
+  color: #fff;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--mono);
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* Improvement badge */
+.imp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--mono);
+  margin-left: 4px;
+  letter-spacing: 0.5px;
+}
+.q-imp { background: #DCFCE7; color: #14532D; border: 1px solid #86EFAC; }
+.f-imp { background: #DBEAFE; color: #1E3A8A; border: 1px solid #93C5FD; }
+.s-imp { background: #EDE9FE; color: #4C1D95; border: 1px solid #C4B5FD; }
+
+/* ── ACTION PLAN PANEL ── */
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 8px;
+  align-items: start;
+}
+.plan-col-hdr {
+  padding: 12px 18px;
+  border-radius: 8px 8px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  letter-spacing: -0.1px;
+}
+.plan-col-hdr .days { font-family: var(--mono); font-size: 11px; font-weight: 400; opacity: 0.85; }
+.q-hdr { background: linear-gradient(135deg, #15803D, #16A34A); color: #fff; }
+.f-hdr { background: linear-gradient(135deg, #1D4ED8, #2563EB); color: #fff; }
+.s-hdr { background: linear-gradient(135deg, #6D28D9, #7C3AED); color: #fff; }
+
+.plan-items {
+  border: 1px solid var(--line);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.plan-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line2);
+  font-size: 11.5px;
+  transition: background 0.1s;
+}
+.plan-item:last-child { border-bottom: none; }
+.plan-item:hover { background: #FAFAFA; }
+.plan-item-id {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-block;
+  margin-bottom: 4px;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.q-item .plan-item-id { background: #DCFCE7; color: #14532D; border: 1px solid #86EFAC; }
+.f-item .plan-item-id { background: #DBEAFE; color: #1E3A8A; border: 1px solid #93C5FD; }
+.s-item .plan-item-id { background: #EDE9FE; color: #4C1D95; border: 1px solid #C4B5FD; }
+.plan-item-title { font-weight: 600; color: var(--ink); line-height: 1.4; margin-bottom: 4px; }
+.plan-item-owner { font-size: 10.5px; color: var(--ink3); margin-top: 3px; }
+.plan-item-metric {
+  font-size: 10px;
+  color: var(--ink2);
+  margin-top: 6px;
+  font-style: italic;
+  border-left: 3px solid var(--line);
+  padding-left: 7px;
+  line-height: 1.4;
+}
+.q-item .plan-item-metric { border-color: #86EFAC; }
+.f-item .plan-item-metric { border-color: #93C5FD; }
+.s-item .plan-item-metric { border-color: #C4B5FD; }
+
+.q-item:nth-child(odd) { background: #FAFFFE; }
+.f-item:nth-child(odd) { background: #FAFCFF; }
+.s-item:nth-child(odd) { background: #FDFAFF; }
+
+/* ── PAIN POINT PANEL ── */
+.pp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+.pp-card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+}
+.pp-card-hdr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  border-bottom: 1px solid;
+}
+.pp-card-body {
+  padding: 12px 14px 14px;
+  font-size: 11.5px;
+  color: var(--ink2);
+  flex: 1;
+}
+.pp-card-body p { margin-bottom: 7px; line-height: 1.45; }
+.pp-card-body p:last-of-type { margin-bottom: 0; }
+.pp-card-fix {
+  font-size: 10.5px;
+  color: var(--grn);
+  border-top: 1px solid var(--line2);
+  margin-top: 10px;
+  padding-top: 9px;
+  line-height: 1.5;
+}
+.pp-card-fix b { font-weight: 600; }
+
+.theme-people  { background: #FDF4FF; border-color: #E879F9; }
+.theme-process { background: #FFF7ED; border-color: #FB923C; }
+.theme-comm    { background: #ECFDF5; border-color: #34D399; }
+.theme-data    { background: #FEF9C3; border-color: #FACC15; }
+.theme-system  { background: #EFF6FF; border-color: #60A5FA; }
+.theme-plan    { background: #F5F3FF; border-color: #A78BFA; }
+
+/* ── METRICS PANEL ── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-top: 8px;
+}
+.metric-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  position: relative;
+  overflow: hidden;
+}
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 10px 10px 0 0;
+}
+.m-grn::before { background: linear-gradient(90deg, #16A34A, #4ADE80); }
+.m-blu::before { background: linear-gradient(90deg, #2563EB, #60A5FA); }
+.m-red::before { background: linear-gradient(90deg, #DC2626, #F87171); }
+.m-pur::before { background: linear-gradient(90deg, #7C3AED, #A78BFA); }
+.metric-id { font-family: var(--mono); font-size: 10px; color: var(--ink3); margin-bottom: 6px; }
+.metric-name { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.3; margin-bottom: 8px; }
+.metric-target {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: var(--mono);
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+.metric-def { font-size: 10.5px; color: var(--ink3); line-height: 1.5; }
+.metric-owner {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 2px 8px;
+  color: var(--ink2);
+}
+
+.m-grn .metric-target { color: #16A34A; }
+.m-blu .metric-target { color: #2563EB; }
+.m-red .metric-target { color: #DC2626; }
+.m-pur .metric-target { color: #7C3AED; }
+
+/* ── LEGEND ── */
+.legend {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  padding: 14px 0 4px;
+  font-size: 11px;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-swatch { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+/* Section label */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--ink3);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--line);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+  .plan-grid, .metrics-grid { grid-template-columns: 1fr; }
+  .pp-grid { grid-template-columns: repeat(2, 1fr); }
+  .panel { padding: 16px 16px 40px; }
+  .page-header { padding: 20px 16px 16px; flex-direction: column; gap: 8px; align-items: flex-start; }
+  .tabs { padding: 0 16px; }
+  .trk-kpi-strip { grid-template-columns: repeat(3, 1fr); }
+  .trk-kb-board { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ══════════════════════════════════════════════
+   PROJECT TRACKER STYLES
+══════════════════════════════════════════════ */
+
+/* KPI STRIP */
+.trk-kpi-strip { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:24px; }
+.trk-kpi {
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:16px 18px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+.trk-kpi::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:4px;
+  border-radius:10px 10px 0 0;
+}
+.trk-kpi.kpi-total::before  { background:linear-gradient(90deg,#0C1F3F,#1E40AF); }
+.trk-kpi.kpi-open::before   { background:linear-gradient(90deg,#2563EB,#60A5FA); }
+.trk-kpi.kpi-inprog::before { background:linear-gradient(90deg,#D97706,#FCD34D); }
+.trk-kpi.kpi-done::before   { background:linear-gradient(90deg,#16A34A,#4ADE80); }
+.trk-kpi.kpi-hold::before   { background:linear-gradient(90deg,#7C3AED,#C4B5FD); }
+.trk-kpi-val  { font-size:32px; font-weight:700; font-family:var(--mono); line-height:1; margin-bottom:2px; }
+.trk-kpi-lbl  { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.7px; color:var(--ink3); margin-bottom:8px; }
+.trk-kpi-sub  { font-size:10.5px; color:var(--ink3); }
+.trk-kpi-bar-wrap { height:4px; background:#F3F4F6; border-radius:2px; margin-top:12px; overflow:hidden; }
+.trk-kpi-bar  { height:100%; border-radius:2px; transition:width 0.6s; }
+.kpi-total .trk-kpi-val { color:#0C1F3F; }
+.kpi-open  .trk-kpi-val { color:#2563EB; }
+.kpi-inprog .trk-kpi-val { color:#D97706; }
+.kpi-done  .trk-kpi-val { color:#16A34A; }
+.kpi-hold  .trk-kpi-val { color:#7C3AED; }
+
+/* DASHBOARD GRID */
+.trk-dash-row { display:grid; gap:16px; margin-bottom:16px; }
+.trk-dash-row.cols-3 { grid-template-columns:1.1fr 1fr 0.9fr; }
+.trk-dash-row.cols-2 { grid-template-columns:1fr 1fr; }
+.trk-dash-row.cols-4 { grid-template-columns:repeat(4,1fr); }
+.trk-card {
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:18px 20px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+.trk-card-hdr {
+  font-size:10px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.7px;
+  color:var(--ink3);
+  margin-bottom:16px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--line2);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.trk-card-hdr span { font-family:var(--mono); font-weight:400; font-size:11px; text-transform:none; letter-spacing:0; color:var(--ink2); }
+
+/* PHASE PROGRESS BARS */
+.trk-phase-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.trk-phase-row:last-child { margin-bottom:0; }
+.trk-phase-lbl { font-size:11px; font-weight:600; min-width:80px; color:var(--ink2); }
+.trk-phase-track { flex:1; height:8px; background:#F3F4F6; border-radius:4px; overflow:hidden; }
+.trk-phase-fill { height:100%; border-radius:4px; transition:width 0.5s; }
+.trk-phase-pct { font-size:11px; font-family:var(--mono); font-weight:500; min-width:32px; text-align:right; color:var(--ink2); }
+.trk-phase-count { font-size:10px; color:var(--ink3); min-width:50px; text-align:right; }
+
+/* OWNER TABLE */
+.trk-owner-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:6px 0;
+  border-bottom:1px solid var(--line2);
+  font-size:11.5px;
+}
+.trk-owner-row:last-child { border-bottom:none; }
+.trk-owner-name { font-weight:500; color:var(--ink); flex:1; }
+.trk-owner-badges { display:flex; gap:4px; align-items:center; }
+.trk-badge { font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:10px; white-space:nowrap; font-family:var(--mono); }
+.tb-open  { background:#EFF6FF; color:#1E40AF; border:1px solid #BFDBFE; }
+.tb-ip    { background:#FFFBEB; color:#92400E; border:1px solid #FDE68A; }
+.tb-done  { background:#F0FDF4; color:#14532D; border:1px solid #BBF7D0; }
+.tb-hold  { background:#F5F3FF; color:#4C1D95; border:1px solid #DDD6FE; }
+
+/* ACTIVITY FEED */
+.trk-activity-item { display:flex; gap:10px; padding:6px 0; border-bottom:1px solid var(--line2); }
+.trk-activity-item:last-child { border-bottom:none; }
+.trk-act-dot { width:7px; height:7px; border-radius:50%; margin-top:4px; flex-shrink:0; }
+.trk-act-text { font-size:11px; color:var(--ink2); line-height:1.4; }
+.trk-act-text strong { color:var(--ink); font-weight:600; }
+.trk-act-time { font-size:9.5px; color:var(--ink3); font-family:var(--mono); margin-top:2px; }
+
+/* STATUS DROPDOWN */
+.trk-status-sel {
+  font-size:10.5px;
+  font-family:var(--font);
+  font-weight:600;
+  border-radius:4px;
+  padding:3px 8px;
+  border:none;
+  cursor:pointer;
+  outline:none;
+  min-width:105px;
+}
+.sel-open   { background:#EFF6FF; color:#1E40AF; }
+.sel-inprog { background:#FFFBEB; color:#92400E; }
+.sel-done   { background:#F0FDF4; color:#14532D; }
+.sel-hold   { background:#F5F3FF; color:#4C1D95; }
+
+/* FILTER BAR */
+.trk-filter-bar {
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  margin-bottom:16px;
+  padding:12px 16px;
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:10px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.04);
+}
+.trk-filter-lbl { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.7px; color:var(--ink3); margin-right:4px; }
+.trk-fsel {
+  font-size:11px; font-family:var(--font);
+  padding:5px 10px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:var(--bg);
+  color:var(--ink2);
+  cursor:pointer;
+  transition:border-color 0.15s;
+}
+.trk-fsel:focus { outline:none; border-color:#60A5FA; box-shadow:0 0 0 2px rgba(96,165,250,0.15); }
+
+/* TRACKER TABLE */
+.trk-table-wrap {
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+.trk-table { width:100%; border-collapse:collapse; }
+.trk-table th {
+  background:#0C1F3F;
+  color:#93C5FD;
+  font-size:10px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.7px;
+  padding:11px 14px;
+  text-align:left;
+  white-space:nowrap;
+  border-right:1px solid #1E3A8A;
+}
+.trk-table th:last-child { border-right:none; }
+.trk-table td {
+  font-size:11.5px;
+  padding:10px 14px;
+  border-bottom:1px solid var(--line2);
+  vertical-align:middle;
+  color:var(--ink2);
+}
+.trk-table tr:last-child td { border-bottom:none; }
+.trk-table tr:hover td { background:#F9FAFB; }
+.trk-table td:first-child { font-family:var(--mono); font-size:10.5px; font-weight:700; color:var(--ink); }
+
+/* PRIORITY BADGES */
+.pri-high { background:#FEF2F2; color:#991B1B; border:1px solid #FECACA; font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:4px; font-family:var(--mono); }
+.pri-med  { background:#FFFBEB; color:#92400E; border:1px solid #FDE68A; font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:4px; font-family:var(--mono); }
+.pri-low  { background:#F0FDF4; color:#14532D; border:1px solid #BBF7D0; font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:4px; font-family:var(--mono); }
+
+/* PHASE TAGS */
+.ptag { font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:4px; font-family:var(--mono); white-space:nowrap; }
+.ptag-30 { background:var(--q-bg); color:var(--q-txt); border:1px solid #86EFAC; }
+.ptag-60 { background:var(--f-bg); color:var(--f-txt); border:1px solid #93C5FD; }
+.ptag-90 { background:var(--s-bg); color:var(--s-txt); border:1px solid #C4B5FD; }
+
+/* QW TAG */
+.qw-tag { background:#DCFCE7; color:#14532D; border:1px solid #86EFAC; font-size:9px; font-weight:700; padding:1px 6px; border-radius:3px; font-family:var(--mono); }
+
+/* KANBAN */
+.trk-kb-board { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; align-items:start; }
+.trk-kb-col { background:#F8F9FB; border:1px solid var(--line); border-radius:10px; padding:12px; min-height:240px; }
+.trk-kb-col-hdr {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:12px;
+  padding-bottom:10px;
+  border-bottom:2px solid transparent;
+}
+.kbh-open   .trk-kb-col-hdr { border-color:#2563EB; }
+.kbh-inprog .trk-kb-col-hdr { border-color:#D97706; }
+.kbh-done   .trk-kb-col-hdr { border-color:#16A34A; }
+.kbh-hold   .trk-kb-col-hdr { border-color:#7C3AED; }
+.trk-kb-col-title { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; }
+.kbt-open   { color:#1E40AF; }
+.kbt-inprog { color:#92400E; }
+.kbt-done   { color:#14532D; }
+.kbt-hold   { color:#5B21B6; }
+.trk-kb-count {
+  font-size:10px; font-family:var(--mono); font-weight:600;
+  background:var(--white); border:1px solid var(--line);
+  padding:1px 7px; border-radius:10px; color:var(--ink3);
+}
+.trk-kb-card {
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:11px 13px;
+  margin-bottom:8px;
+  cursor:grab;
+  transition:box-shadow 0.15s, border-color 0.15s, transform 0.1s;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.trk-kb-card:hover { border-color:#93C5FD; box-shadow:0 4px 12px rgba(0,0,0,0.08); transform:translateY(-1px); }
+.trk-kb-card:active { cursor:grabbing; }
+.trk-kb-card-id { font-family:var(--mono); font-size:9.5px; font-weight:700; color:var(--ink3); margin-bottom:4px; display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
+.trk-kb-card-title { font-size:11px; font-weight:600; color:var(--ink); line-height:1.4; margin-bottom:8px; }
+.trk-kb-card-meta { display:flex; align-items:center; justify-content:space-between; }
+.trk-kb-owner { font-size:10px; color:var(--ink3); }
+.trk-kb-empty { font-size:11px; color:var(--ink3); text-align:center; padding:28px 0; font-style:italic; border:2px dashed var(--line2); border-radius:6px; }
+
+/* CHART CONTAINER */
+.trk-chart-box { position:relative; width:100%; }
+
+/* THEME CHIP */
+.theme-chip {
+  font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:3px;
+  font-family:var(--mono); white-space:nowrap;
+}
+.tc-people  { background:#FDF4FF; color:#7E22CE; border:1px solid #E879F9; }
+.tc-process { background:#FFF7ED; color:#9A3412; border:1px solid #FB923C; }
+.tc-comm    { background:#ECFDF5; color:#065F46; border:1px solid #34D399; }
+.tc-data    { background:#FEF9C3; color:#854D0E; border:1px solid #FACC15; }
+.tc-systems { background:#EFF6FF; color:#1E40AF; border:1px solid #60A5FA; }
+.tc-planning { background:#F5F3FF; color:#5B21B6; border:1px solid #A78BFA; }
+
+/* ══════════════════════════════════════════════
+   CREATE ITEM MODAL
+══════════════════════════════════════════════ */
+.ci-overlay {
+  position:fixed; inset:0;
+  background:rgba(12,31,63,0.55);
+  backdrop-filter:blur(3px);
+  z-index:9000;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.2s;
+}
+.ci-overlay.open { opacity:1; pointer-events:all; }
+
+.ci-modal {
+  background:var(--white);
+  border-radius:12px;
+  width:min(680px, 96vw);
+  max-height:90vh;
+  overflow-y:auto;
+  box-shadow:0 24px 60px rgba(12,31,63,0.22), 0 4px 16px rgba(0,0,0,0.12);
+  transform:translateY(12px) scale(0.98);
+  transition:transform 0.22s cubic-bezier(.4,0,.2,1);
+}
+.ci-overlay.open .ci-modal { transform:translateY(0) scale(1); }
+
+.ci-header {
+  background:#0C1F3F;
+  color:#fff;
+  padding:18px 24px 16px;
+  border-radius:12px 12px 0 0;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.ci-header-left { display:flex; align-items:center; gap:12px; }
+.ci-header h2 { font-size:15px; font-weight:700; letter-spacing:-0.2px; }
+.ci-header .ci-subtitle { font-size:10.5px; color:#93C5FD; margin-top:2px; }
+.ci-close {
+  width:28px; height:28px; border-radius:50%;
+  background:rgba(255,255,255,0.1);
+  border:none; color:#fff; font-size:16px; line-height:1;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background 0.15s;
+}
+.ci-close:hover { background:rgba(255,255,255,0.2); }
+
+.ci-body { padding:22px 24px 24px; }
+
+/* Type toggle */
+.ci-type-toggle {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:8px; margin-bottom:20px;
+}
+.ci-type-btn {
+  padding:10px 14px;
+  border-radius:8px;
+  border:2px solid var(--line);
+  background:var(--bg);
+  cursor:pointer;
+  text-align:left;
+  transition:all 0.15s;
+  font-family:var(--font);
+}
+.ci-type-btn:hover { border-color:#60A5FA; background:#EFF6FF; }
+.ci-type-btn.active-task {
+  border-color:#2563EB; background:#EFF6FF;
+  box-shadow:0 0 0 3px rgba(37,99,235,0.12);
+}
+.ci-type-btn.active-pp {
+  border-color:#DC2626; background:#FEF2F2;
+  box-shadow:0 0 0 3px rgba(220,38,38,0.1);
+}
+.ci-type-icon { font-size:18px; margin-bottom:4px; display:block; }
+.ci-type-label { font-size:12px; font-weight:700; color:var(--ink); display:block; }
+.ci-type-desc  { font-size:10px; color:var(--ink3); display:block; margin-top:1px; }
+
+/* Form grid */
+.ci-form-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.ci-form-full { grid-column:1 / -1; }
+
+.ci-field { display:flex; flex-direction:column; gap:5px; }
+.ci-label {
+  font-size:10.5px; font-weight:700;
+  text-transform:uppercase; letter-spacing:0.6px;
+  color:var(--ink3);
+}
+.ci-label .ci-req { color:#DC2626; margin-left:2px; }
+.ci-input, .ci-select, .ci-textarea {
+  font-family:var(--font); font-size:12.5px;
+  padding:8px 11px;
+  border:1.5px solid var(--line);
+  border-radius:6px;
+  background:var(--white);
+  color:var(--ink);
+  transition:border-color 0.15s, box-shadow 0.15s;
+  width:100%;
+}
+.ci-input:focus, .ci-select:focus, .ci-textarea:focus {
+  outline:none;
+  border-color:#2563EB;
+  box-shadow:0 0 0 3px rgba(37,99,235,0.1);
+}
+.ci-input.err, .ci-select.err, .ci-textarea.err {
+  border-color:#DC2626;
+  box-shadow:0 0 0 3px rgba(220,38,38,0.08);
+}
+.ci-textarea { resize:vertical; min-height:68px; line-height:1.5; }
+.ci-err-msg { font-size:10px; color:#DC2626; margin-top:2px; display:none; }
+.ci-err-msg.show { display:block; }
+
+/* ID preview badge */
+.ci-id-preview {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px; border-radius:4px;
+  font-family:var(--mono); font-size:11px; font-weight:700;
+  background:#F3F4F6; color:var(--ink2);
+  border:1px solid var(--line);
+  transition:all 0.2s;
+}
+.ci-id-preview.task-id { background:#EFF6FF; color:#1E40AF; border-color:#BFDBFE; }
+.ci-id-preview.pp-id   { background:#FEF2F2; color:#991B1B; border-color:#FECACA; }
+
+/* Advanced section toggle */
+.ci-adv-toggle {
+  display:flex; align-items:center; gap:6px;
+  font-size:11px; color:var(--ink3); cursor:pointer;
+  margin:16px 0 0; user-select:none;
+  font-weight:500;
+}
+.ci-adv-toggle:hover { color:var(--ink2); }
+.ci-adv-arrow { font-size:9px; transition:transform 0.2s; }
+.ci-adv-arrow.open { transform:rotate(90deg); }
+.ci-adv-body { display:none; margin-top:12px; }
+.ci-adv-body.open { display:block; }
+
+/* Footer */
+.ci-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 24px 18px;
+  border-top:1px solid var(--line2);
+  gap:10px;
+}
+.ci-footer-left { font-size:10.5px; color:var(--ink3); font-family:var(--mono); }
+.ci-footer-right { display:flex; gap:8px; }
+.ci-btn {
+  font-family:var(--font); font-size:11.5px; font-weight:600;
+  padding:8px 18px; border-radius:6px; cursor:pointer;
+  border:none; transition:all 0.15s;
+  display:flex; align-items:center; gap:6px;
+}
+.ci-btn-cancel {
+  background:var(--bg); color:var(--ink2);
+  border:1px solid var(--line);
+}
+.ci-btn-cancel:hover { background:#E5E7EB; }
+.ci-btn-create {
+  background:#0C1F3F; color:#fff;
+  box-shadow:0 2px 6px rgba(12,31,63,0.2);
+}
+.ci-btn-create:hover { background:#1E3A8A; }
+.ci-btn-create:active { transform:scale(0.97); }
+.ci-btn-create.loading { opacity:0.7; pointer-events:none; }
+
+/* Toast notification */
+.ci-toast {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(12px);
+  background:#111827; color:#fff;
+  padding:10px 20px; border-radius:8px;
+  font-size:12px; font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  z-index:9999;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.2s, transform 0.2s;
+  white-space:nowrap;
+  display:flex; align-items:center; gap:8px;
+}
+.ci-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.ci-toast .ci-toast-icon { font-size:14px; }
+
+/* Create button variants */
+.ci-trigger-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font); font-size:11px; font-weight:600;
+  padding:6px 14px; border-radius:6px;
+  background:#0C1F3F; color:#fff;
+  border:none; cursor:pointer;
+  transition:background 0.15s, transform 0.1s;
+  box-shadow:0 2px 6px rgba(12,31,63,0.18);
+  letter-spacing:0.2px;
+}
+.ci-trigger-btn:hover  { background:#1E3A8A; }
+.ci-trigger-btn:active { transform:scale(0.97); }
+
+/* Edit / Delete inline actions */
+.ci-row-actions {
+  display:flex; gap:4px; align-items:center;
+}
+.ci-row-btn {
+  font-size:10px; padding:2px 7px; border-radius:3px;
+  border:1px solid var(--line); background:var(--bg);
+  color:var(--ink3); cursor:pointer; font-family:var(--font);
+  transition:all 0.12s;
+}
+.ci-row-btn:hover { background:var(--white); color:var(--ink); border-color:#9CA3AF; }
+.ci-row-btn.del:hover { background:#FEF2F2; color:#DC2626; border-color:#FECACA; }
+
+/* ── DYNAMIC PP SECTION ── */
+.pp-dynamic-section { margin-top:8px; }
+.pp-dynamic-item {
+  display:flex; align-items:flex-start; gap:8px;
+  padding:6px 8px;
+  border-radius:5px;
+  margin-top:5px;
+  background:rgba(255,255,255,0.65);
+  border:1px solid rgba(0,0,0,0.07);
+  font-size:11px;
+}
+.pp-dynamic-item-text { flex:1; color:var(--ink2); line-height:1.4; }
+.pp-dynamic-item-id { font-family:var(--mono); font-weight:700; font-size:10px; color:#B91C1C; white-space:nowrap; }
+.pp-status-sel {
+  font-size:10px; font-weight:600; font-family:var(--font);
+  border:1px solid var(--line); border-radius:4px;
+  padding:2px 5px; cursor:pointer; white-space:nowrap;
+  transition:all 0.15s;
+}
+/* ── DYNAMIC PLAN ITEM (injected into Q/F/S) ── */
+.plan-item-dynamic { border-left:3px solid currentColor; }
+.plan-item-dynamic .plan-item-status {
+  display:inline-flex; align-items:center; gap:5px; margin-top:5px;
+}
+.plan-item-dynamic .plan-item-status select {
+  font-size:10px; font-weight:600; font-family:var(--font);
+  border:1px solid var(--line); border-radius:4px;
+  padding:2px 6px; cursor:pointer;
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+<div class="page-header">
+  <div>
+    <h1>Corporate Onboarding Improvement Programme</h1>
+    <div class="sub">Pain-point analysis · Root causes · 30/60/90-day action plan · Medi Assist Insurance TPA</div>
+  </div>
+
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showPanel('flow')">Process Flow</button>
+  <button class="tab-btn" onclick="showPanel('plan')">30/60/90-Day Plan</button>
+  <button class="tab-btn" onclick="showPanel('pp')">Pain Point → Solution</button>
+  <button class="tab-btn" onclick="showPanel('metrics')">Success Metrics</button>
+  <button class="tab-btn" onclick="showPanel('tracker-dash')" id="tab-tracker-dash">📊 Dashboard</button>
+  <button class="tab-btn" onclick="showPanel('tracker-master')" id="tab-tracker-master">⚡ Master Tracker</button>
+  <button class="tab-btn" onclick="showPanel('tracker-kanban')" id="tab-tracker-kanban">📋 Kanban Board</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 1 — PROCESS FLOW
+═══════════════════════════════════════════════════ -->
+<div class="panel active" id="panel-flow">
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--am-mid);border:1px solid var(--am-bdr)"></div><span>Account Management</span></div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--ob-mid);border:1px solid var(--ob-bdr)"></div><span>Onboarding Team</span></div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--it-mid);border:1px solid var(--it-bdr)"></div><span>IT / Engineering</span></div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--en-mid);border:1px solid var(--en-bdr)"></div><span>Enrolment</span></div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--red-bg);border:1px dashed var(--red-bdr)"></div><span>Rework / Error Loop</span></div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--ora-bg);border:1px solid var(--ora-bdr)"></div><span>Decision Point</span></div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--grn-bg);border:1px solid var(--grn-bdr)"></div><span>Process Output</span></div>
+    <div class="legend-item" style="margin-left:8px"><span class="pp-badge">P1</span><span style="font-size:11px">= Pain Point ref</span></div>
+    <div class="legend-item"><span class="imp-badge q-imp">Q1</span><span style="font-size:11px">= 0–30 day fix</span></div>
+    <div class="legend-item"><span class="imp-badge f-imp">F1</span><span style="font-size:11px">= 31–60 day fix</span></div>
+    <div class="legend-item"><span class="imp-badge s-imp">S1</span><span style="font-size:11px">= 61–90 day fix</span></div>
+  </div>
+
+  <div class="flow-wrap">
+  <table class="flow-table">
+    <thead>
+      <tr>
+        <th class="th-stage">Stage</th>
+        <th class="th-am">Account Management<br><span style="font-weight:400;font-size:10px;color:#4472A8">Fills template · Client liaison · Go-live sign-off</span></th>
+        <th class="th-ob">Onboarding Team<br><span style="font-weight:400;font-size:10px;color:#2D7A60">Regulates entire go-live · CAS ID · SLA tracking</span></th>
+        <th class="th-it">IT / Engineering<br><span style="font-weight:400;font-size:10px;color:#5852A6">Portal development · System integration · Credentials</span></th>
+        <th class="th-en">Enrolment<br><span style="font-weight:400;font-size:10px;color:#8A5210">Data upload · CMS entry · Welcome mailers</span></th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- ── S1 ── -->
+      <tr>
+        <td class="td-stage">
+          <div class="stage-num s1n">S1</div>
+          <span class="stage-label">Corporate<br>Rollout</span>
+        </td>
+        <td class="td-cell td-am">
+          <div class="pp-badge">P1</div> <span class="imp-badge q-imp">Q3</span>
+          <div class="box box-am">
+            <b>Fill Onboarding Template (V2)</b>
+            <span>All fields, dropdowns, DOB, email, MA IDs — mandatory field validation enforced</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="pp-badge">P2</div> <span class="imp-badge q-imp">Q3</span>
+          <div class="box box-am">
+            <b>Raise Service Desk Ticket</b>
+            <span>Submit with filled V2 template attached · Use correct service-desk bucket</span>
+          </div>
+        </td>
+        <td class="td-cell td-ob">
+          <div class="pp-badge">P1</div> <span class="imp-badge q-imp">Q4</span>
+          <div class="box box-ob">
+            <b>Validate Template Fields</b>
+            <span>Pre-ticket checklist: Policy min, family def, SL, top-ups — return if incomplete</span>
+          </div>
+          <div class="arrow">↓</div>
+          <span class="imp-badge q-imp">Q1</span>
+          <div class="box box-ob">
+            <b>Confirm &amp; Route Ticket via SPOC</b>
+            <span>Onboarding SPOC routes to Enrolment for CMS punch-in</span>
+          </div>
+        </td>
+        <td class="td-cell td-it">
+          <div class="box box-none"><b>No IT action in S1</b></div>
+        </td>
+        <td class="td-cell td-en">
+          <div class="box box-en">
+            <b>Policy Punch-in (CMS)</b>
+            <span>Enrolment team enters corporate policy record in CMS</span>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ── S2 ── -->
+      <tr>
+        <td class="td-stage">
+          <div class="stage-num s2n">S2</div>
+          <span class="stage-label">CAS ID &amp;<br>Test Creds</span>
+        </td>
+        <td class="td-cell td-am">
+          <div class="box box-am">
+            <b>Confirm Coverage Details</b>
+            <span>Family definition · OPD inclusions · Top-up type</span>
+          </div>
+        </td>
+        <td class="td-cell td-ob">
+          <span class="imp-badge q-imp">Q1</span>
+          <div class="box box-ob">
+            <b>Clone Corporate Replica in CAS</b>
+            <span>Create CAS ID from standard template</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-ob">
+            <b>Configure Family Def &amp; Premium</b>
+            <span>Set up IWP/CAS mapping, corporate configuration</span>
+          </div>
+          <div class="arrow">↓</div>
+          <span class="imp-badge q-imp">Q1</span>
+          <div class="box box-ob">
+            <b>Raise Rollout Ticket to IT via SPOC</b>
+            <span>App Support assigned from service desk queue</span>
+          </div>
+        </td>
+        <td class="td-cell td-it">
+          <div class="pp-badge">P3</div> <span class="imp-badge q-imp">Q5</span> <span class="imp-badge q-imp">Q6</span>
+          <div class="box box-it">
+            <b>App Support Picks Rollout Ticket</b>
+            <span>Assigned from queue · TAT published · SLA monitored</span>
+          </div>
+          <div class="arrow">↓</div>
+          <span class="imp-badge s-imp">S3</span>
+          <div class="box box-it">
+            <b>Create CMS Login &amp; Test Credentials</b>
+            <span>Within 24-hr SLA (target: auto-created on CAS approval)</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="pp-badge">P10</div> <span class="imp-badge f-imp">F5</span>
+          <div class="box box-it">
+            <b>Provision Test Users in CMS</b>
+            <span>Standard test-user set per corporate — auto-provisioned day 1 of staging</span>
+          </div>
+        </td>
+        <td class="td-cell td-en">
+          <div class="box box-none"><b>No Enrolment action in S2</b></div>
+        </td>
+      </tr>
+
+      <!-- ── S3 ── -->
+      <tr>
+        <td class="td-stage">
+          <div class="stage-num s3n">S3</div>
+          <span class="stage-label">Page Dev &amp;<br>Portal Changes</span>
+        </td>
+        <td class="td-cell td-am">
+          <div class="pp-badge">P5</div>
+          <div class="box box-am">
+            <b>Test Pages with Credentials</b>
+            <span>Review OE page, confirm or request changes within iteration cap</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-am">
+            <b>Approve Test Portal</b>
+            <span>Sign off before data upload begins</span>
+          </div>
+        </td>
+        <td class="td-cell td-ob">
+          <div class="box box-ob">
+            <b>Coordinate Page Requirements</b>
+            <span>Share with Dev &amp; Portal teams — dupes, future dates, specials</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-ob">
+            <b>Generate Test Links</b>
+            <span>Upload test users, verify login logic</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-ob">
+            <b>Share Custom Data Format</b>
+            <span>Send AM (self + dependents) file format</span>
+          </div>
+        </td>
+        <td class="td-cell td-it">
+          <div class="pp-badge">P7</div> <span class="imp-badge f-imp">F6</span>
+          <div class="box box-it">
+            <b>Develop OE Page</b>
+            <span>Portal page + homepage changes · Domain freeze at T–7 days enforced</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="pp-badge">P7</div> <span class="imp-badge s-imp">S2</span>
+          <div class="box box-it">
+            <b>Staging Test — Production Parity Check</b>
+            <span>Production-parity test framework · Domain freeze T–7 days</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-it">
+            <b>Validate CAS / IWP / Auth Sync</b>
+            <span>Sync-validation script confirms no domain-mismatch before go-live</span>
+          </div>
+        </td>
+        <td class="td-cell td-en">
+          <div class="box box-none"><b>No Enrolment action in S3</b></div>
+        </td>
+      </tr>
+
+      <!-- ── S4 ── -->
+      <tr>
+        <td class="td-stage">
+          <div class="stage-num s4n">S4</div>
+          <span class="stage-label">Data<br>Upload</span>
+        </td>
+        <td class="td-cell td-am">
+          <div class="pp-badge">P6</div> <span class="imp-badge q-imp">Q3</span>
+          <div class="box box-am">
+            <b>Share Inception Data File</b>
+            <span>Employee + dependents · Welcome mailer format confirmed</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="rework">
+            <b>↻ Rework Loop (if errors returned)</b>
+            Fix file per error report from Enrolment and resubmit to Onboarding
+          </div>
+        </td>
+        <td class="td-cell td-ob">
+          <div class="pp-badge">P6</div> <span class="imp-badge q-imp">Q4</span>
+          <div class="box box-ob">
+            <b>Validate Data Before Upload</b>
+            <span>Check DOB, email, MA IDs, duplicate employee IDs — pre-upload checklist</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-ob">
+            <b>Connect with Comms Team</b>
+            <span>Confirm mailer customisation needed</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-ob">
+            <b>Share Error Report to AM</b>
+            <span>Return error rows with AM review required</span>
+          </div>
+        </td>
+        <td class="td-cell td-it">
+          <div class="box box-it">
+            <b>Push Patches to Production</b>
+            <span>Code-level changes approved in S3 are deployed</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="pp-badge">P8</div> <span class="imp-badge f-imp">F4</span>
+          <div class="box box-it">
+            <b>De-duplication Script in CAS</b>
+            <span>Pre-upload duplicate-ID detection — duplicate errors targeted to zero</span>
+          </div>
+        </td>
+        <td class="td-cell td-en">
+          <div class="pp-badge">P8</div>
+          <div class="box box-en">
+            <b>Upload Data Files in CAS</b>
+            <span>Add, edit, delete — standard file naming convention</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="decision">
+            <b>⬦ Errors Found?</b>
+            Yes → return to Onboarding → AM for correction and reupload
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-en">
+            <b>Re-upload Corrected Data</b>
+            <span>After config / data fix confirmed</span>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ── S5 ── -->
+      <tr>
+        <td class="td-stage">
+          <div class="stage-num s5n">S5</div>
+          <span class="stage-label">Production<br>&amp; Go-Live</span>
+        </td>
+        <td class="td-cell td-am">
+          <div class="pp-badge">P11</div> <span class="imp-badge q-imp">Q10</span>
+          <div class="box box-am">
+            <b>Raise Final Go-Live Ticket</b>
+            <span>Signed go-live checklist mandatory — no live portal without sign-off</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-am">
+            <b>Share HR Approval + Live Emp IDs</b>
+            <span>Bulk live employee file provided</span>
+          </div>
+        </td>
+        <td class="td-cell td-ob">
+          <div class="pp-badge">P9</div> <span class="imp-badge q-imp">Q5</span> <span class="imp-badge q-imp">Q6</span>
+          <div class="box box-ob">
+            <b>Activate CAS ID</b>
+            <span>CAS active · Password reset (self-service for AM) · OE window set · Mailer time set</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="pp-badge">P10</div>
+          <div class="box box-ob">
+            <b>Live-User Testing</b>
+            <span>Test mailer + sign-in check with real credentials</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="pp-badge">P11</div> <span class="imp-badge q-imp">Q8</span>
+          <div class="box box-ob">
+            <b>Push Portal Live</b>
+            <span>Open enrolment window — status visible on shared go-live tracker</span>
+          </div>
+        </td>
+        <td class="td-cell td-it">
+          <div class="box box-it">
+            <b>Final Production Push</b>
+            <span>Last portal / code changes released</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-it">
+            <b>Monitor Post-Launch</b>
+            <span>Login, CAS/IWP/Auth sync validated live</span>
+          </div>
+        </td>
+        <td class="td-cell td-en">
+          <div class="box box-en">
+            <b>Confirm Data Live in CMS</b>
+            <span>Verify employee records accessible in production</span>
+          </div>
+        </td>
+      </tr>
+
+      <!-- ── S6 ── -->
+      <tr>
+        <td class="td-stage">
+          <div class="stage-num s6n">S6</div>
+          <span class="stage-label">Welcome<br>Mailers</span>
+        </td>
+        <td class="td-cell td-am">
+          <div class="box box-am">
+            <b>Verify Test Email</b>
+            <span>Confirm verification code · Mailer format correct</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-am">
+            <b>Share HR Approval</b>
+            <span>Bulk live employee IDs confirmed for mailer</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-out">
+            <b>✓ OUTPUT: Live OE Portal</b>
+            Enrolment window open — corporate onboarding complete
+          </div>
+        </td>
+        <td class="td-cell td-ob">
+          <div class="pp-badge">P12</div> <span class="imp-badge s-imp">S7</span>
+          <div class="box box-ob">
+            <b>Upload Mailer Template</b>
+            <span>Pre-approved template from catalogue · AM mail ID for test</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-ob">
+            <b>Share Confirmation Summary</b>
+            <span>Send to AM (batch ID, count, status)</span>
+          </div>
+        </td>
+        <td class="td-cell td-it">
+          <div class="box box-none"><b>No IT action in S6</b></div>
+        </td>
+        <td class="td-cell td-en">
+          <div class="box box-en">
+            <b>Trigger Test Email</b>
+            <span>Only to test email (max 2 codes)</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-en">
+            <b>Create Batch &amp; Trigger Bulk Mailer</b>
+            <span>At scheduled time using verification-code workflow</span>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="box box-out">
+            <b>✓ OUTPUT: Confirmation Summary</b>
+            Back to Account Manager
+          </div>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     TAB 2 — 30/60/90 ACTION PLAN
+═══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-plan">
+  <div class="section-label">30 / 60 / 90-Day Action Plan — Day 0 = Kickoff date set by Onboarding Leadership</div>
+  <div class="plan-grid">
+
+    <!-- 0–30 -->
+    <div>
+      <div class="plan-col-hdr q-hdr">
+        Quick Wins &amp; Foundation
+        <span class="days">Days 0–30</span>
+      </div>
+      <div class="plan-items" id="plan-items-q">
+        <div class="plan-item q-item">
+          <div class="plan-item-id">Q1</div>
+          <div class="plan-item-title">Designate SPOC per stakeholder team (AM ↔ Onboarding ↔ Enrolment ↔ IT)</div>
+          <div class="plan-item-owner">Owner: Onboarding Lead · Dependency: None</div>
+          <div class="plan-item-metric">SPOC matrix published; in use on every ticket</div>
+        </div>
+        <div class="plan-item q-item">
+          <div class="plan-item-id">Q2</div>
+          <div class="plan-item-title">Publish SOP + TAT for top 5 rollout types (basic, OE, OE-with-customisation, parental-only, top-up)</div>
+          <div class="plan-item-owner">Owner: Onboarding · Dependency: Q1 (SPOC matrix)</div>
+          <div class="plan-item-metric">SOP repository live; AMs trained</div>
+        </div>
+        <div class="plan-item q-item">
+          <div class="plan-item-id">Q3</div>
+          <div class="plan-item-title">Roll out V2 onboarding template — single sheet, sections, dropdowns, mandatory-field validation</div>
+          <div class="plan-item-owner">Owner: Onboarding · Dependency: IT review</div>
+          <div class="plan-item-metric">100% of new tickets use V2 within 30 days</div>
+        </div>
+        <div class="plan-item q-item">
+          <div class="plan-item-id">Q4</div>
+          <div class="plan-item-title">Pre-ticket data-quality checklist embedded in V2 template</div>
+          <div class="plan-item-owner">Owner: Onboarding · Dependency: Q3</div>
+          <div class="plan-item-metric">Tickets returned for incomplete data ≤ 5%</div>
+        </div>
+        <div class="plan-item q-item">
+          <div class="plan-item-id">Q5</div>
+          <div class="plan-item-title">Define &amp; publish TAT / SLA for password reset and login creation</div>
+          <div class="plan-item-owner">Owner: IT + Onboarding · Dependency: None</div>
+          <div class="plan-item-metric">TAT visible on every ticket; weekly compliance report</div>
+        </div>
+        <div class="plan-item q-item">
+          <div class="plan-item-id">Q6</div>
+          <div class="plan-item-title">Self-service password reset for AMs + backup operator designated</div>
+          <div class="plan-item-owner">Owner: IT · Dependency: Q5</div>
+          <div class="plan-item-metric">AM-raised password tickets reduced &gt; 70%</div>
+        </div>
+        <div class="plan-item q-item">
+          <div class="plan-item-id">Q7</div>
+          <div class="plan-item-title">Weekly tri-team stand-up (AM, Onboarding, Enrolment) with standing agenda</div>
+          <div class="plan-item-owner">Owner: Onboarding Lead · Dependency: None</div>
+          <div class="plan-item-metric">4 stand-ups completed</div>
+        </div>
+        <div class="plan-item q-item">
+          <div class="plan-item-id">Q8</div>
+          <div class="plan-item-title">Shared go-live tracker — status visibility for all AMs before raising follow-up calls</div>
+          <div class="plan-item-owner">Owner: Onboarding · Dependency: None</div>
+          <div class="plan-item-metric">AMs check tracker before calling follow-ups</div>
+        </div>
+        <div class="plan-item q-item">
+          <div class="plan-item-id">Q9</div>
+          <div class="plan-item-title">Urgency rubric + reviewer per service-desk queue — eliminate false urgency tagging</div>
+          <div class="plan-item-owner">Owner: Onboarding + Service Desk · Dependency: None</div>
+          <div class="plan-item-metric">False-urgency tickets reduced</div>
+        </div>
+        <div class="plan-item q-item">
+          <div class="plan-item-id">Q10</div>
+          <div class="plan-item-title">Mandatory go-live sign-off ticket + published checklist — no live portal without sign-off</div>
+          <div class="plan-item-owner">Owner: Onboarding + AM · Dependency: Q2</div>
+          <div class="plan-item-metric">Zero go-lives without signed checklist</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 31–60 -->
+    <div>
+      <div class="plan-col-hdr f-hdr">
+        Foundation Build
+        <span class="days">Days 31–60</span>
+      </div>
+      <div class="plan-items" id="plan-items-f">
+        <div class="plan-item f-item">
+          <div class="plan-item-id">F1</div>
+          <div class="plan-item-title">AM training programme + searchable knowledge-base launch</div>
+          <div class="plan-item-owner">Owner: L&amp;D + Onboarding · Dependency: Q2</div>
+          <div class="plan-item-metric">Module completion ≥ 90% of active AMs</div>
+        </div>
+        <div class="plan-item f-item">
+          <div class="plan-item-id">F2</div>
+          <div class="plan-item-title">AM expert / buddy rotation per region — named buddy per region, quarterly rotation</div>
+          <div class="plan-item-owner">Owner: Onboarding · Dependency: F1</div>
+          <div class="plan-item-metric">Each region has named buddy</div>
+        </div>
+        <div class="plan-item f-item">
+          <div class="plan-item-id">F3</div>
+          <div class="plan-item-title">Ticketing process redesign — dropdown ticket form with routing rules</div>
+          <div class="plan-item-owner">Owner: Service Desk · Dependency: Q1</div>
+          <div class="plan-item-metric">Misrouted tickets ≤ 2%</div>
+        </div>
+        <div class="plan-item f-item">
+          <div class="plan-item-id">F4</div>
+          <div class="plan-item-title">Pre-upload de-duplication script in CAS — duplicate-ID errors targeted to zero</div>
+          <div class="plan-item-owner">Owner: IT · Dependency: None</div>
+          <div class="plan-item-metric">Duplicate-ID errors at upload → 0</div>
+        </div>
+        <div class="plan-item f-item">
+          <div class="plan-item-id">F5</div>
+          <div class="plan-item-title">Auto-provision standard test-user set per corporate on day 1 of staging</div>
+          <div class="plan-item-owner">Owner: IT · Dependency: None</div>
+          <div class="plan-item-metric">Test users available day-1 of staging</div>
+        </div>
+        <div class="plan-item f-item">
+          <div class="plan-item-id">F6</div>
+          <div class="plan-item-title">Domain-change freeze policy (T–7 days) + CAS/IWP/Auth sync-validation script</div>
+          <div class="plan-item-owner">Owner: IT + Onboarding · Dependency: None</div>
+          <div class="plan-item-metric">Zero domain-mismatch incidents</div>
+        </div>
+        <div class="plan-item f-item">
+          <div class="plan-item-id">F7</div>
+          <div class="plan-item-title">Endorsement-data SLA agreed with each major client (monthly cycle)</div>
+          <div class="plan-item-owner">Owner: Account Mgmt · Dependency: F1</div>
+          <div class="plan-item-metric">Endorsements within agreed SLA ≥ 90%</div>
+        </div>
+        <div class="plan-item f-item">
+          <div class="plan-item-id">F8</div>
+          <div class="plan-item-title">Resolution-with-alternative template + mandatory reason code on every rejection</div>
+          <div class="plan-item-owner">Owner: Onboarding · Dependency: None</div>
+          <div class="plan-item-metric">Every rejected ticket has reason + alternative</div>
+        </div>
+        <div class="plan-item f-item">
+          <div class="plan-item-id">F9</div>
+          <div class="plan-item-title">Soft-skills + customer-service refresher for Ops Enablement / Support roles</div>
+          <div class="plan-item-owner">Owner: L&amp;D · Dependency: None</div>
+          <div class="plan-item-metric">AM CSAT ≥ baseline + 10 points</div>
+        </div>
+        <div class="plan-item f-item">
+          <div class="plan-item-id">F10</div>
+          <div class="plan-item-title">Standing approvals matrix — routine changes do not require AM sign-off</div>
+          <div class="plan-item-owner">Owner: Onboarding + AM · Dependency: Q2</div>
+          <div class="plan-item-metric">AM hours on routine validation reduced</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 61–90 -->
+    <div>
+      <div class="plan-col-hdr s-hdr">
+        Scale &amp; Sustain
+        <span class="days">Days 61–90</span>
+      </div>
+      <div class="plan-items" id="plan-items-s">
+        <div class="plan-item s-item">
+          <div class="plan-item-id">S1</div>
+          <div class="plan-item-title">Self-service admin tool — top 10 configuration change types are self-serve</div>
+          <div class="plan-item-owner">Owner: IT · Dependency: F3</div>
+          <div class="plan-item-metric">Top 10 change types are self-serve</div>
+        </div>
+        <div class="plan-item s-item">
+          <div class="plan-item-id">S2</div>
+          <div class="plan-item-title">Production-parity testing framework — staging vs production drift defects → 0</div>
+          <div class="plan-item-owner">Owner: IT · Dependency: None</div>
+          <div class="plan-item-metric">Staging-vs-production drift defects → 0</div>
+        </div>
+        <div class="plan-item s-item">
+          <div class="plan-item-id">S3</div>
+          <div class="plan-item-title">Automated login creation from CAS approval — within 1 hour of approval</div>
+          <div class="plan-item-owner">Owner: IT · Dependency: Q5</div>
+          <div class="plan-item-metric">Login creation ≤ 1 hour of CAS approval</div>
+        </div>
+        <div class="plan-item s-item">
+          <div class="plan-item-id">S4</div>
+          <div class="plan-item-title">Proactive issue-monitoring dashboard for AMs — detect issues before client escalation</div>
+          <div class="plan-item-owner">Owner: IT + AM · Dependency: Q8</div>
+          <div class="plan-item-metric">AMs detect ≥ 80% of issues before client escalation</div>
+        </div>
+        <div class="plan-item s-item">
+          <div class="plan-item-id">S5</div>
+          <div class="plan-item-title">Live, searchable SOP / knowledge-base portal — replaces email queries with self-service</div>
+          <div class="plan-item-owner">Owner: Onboarding + L&amp;D · Dependency: F1</div>
+          <div class="plan-item-metric">Search-driven self-service adopted</div>
+        </div>
+        <div class="plan-item s-item">
+          <div class="plan-item-id">S6</div>
+          <div class="plan-item-title">Customer-facing onboarding playbook (client-side guide) — adopted by top 10 corporates</div>
+          <div class="plan-item-owner">Owner: Account Mgmt · Dependency: Q2</div>
+          <div class="plan-item-metric">Adopted by top 10 corporates</div>
+        </div>
+        <div class="plan-item s-item">
+          <div class="plan-item-id">S7</div>
+          <div class="plan-item-title">Pre-approved welcome-mailer template catalogue — customisation lead time ≤ 1 day</div>
+          <div class="plan-item-owner">Owner: Onboarding + Comms · Dependency: None</div>
+          <div class="plan-item-metric">Mailer customisation lead time ≤ 1 day</div>
+        </div>
+        <div class="plan-item s-item">
+          <div class="plan-item-id">S8</div>
+          <div class="plan-item-title">Quarterly process review cadence with all four teams — revised SOPs each quarter</div>
+          <div class="plan-item-owner">Owner: Onboarding Lead · Dependency: None</div>
+          <div class="plan-item-metric">Review log + revised SOPs per quarter</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     TAB 3 — PAIN POINT → SOLUTION
+═══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-pp">
+  <div class="section-label">30 Pain Points mapped to solutions, owners, and improvement phase</div>
+  <div class="pp-grid">
+
+    <!-- People & Knowledge -->
+    <div class="pp-card theme-people">
+      <div class="pp-card-hdr" style="background:#FDF4FF;border-bottom:1px solid #E879F9">
+        <span style="font-size:16px">👤</span>
+        <span style="color:#86198F;font-weight:700">People &amp; Knowledge</span>
+      </div>
+      <div class="pp-card-body">
+        <p><b>PP1</b> — AMs lack end-to-end process understanding</p>
+        <p style="margin-top:5px"><b>PP2</b> — Hygiene checks skipped before raising tickets</p>
+        <p style="margin-top:5px"><b>PP3</b> — No standardised training material or knowledge base</p>
+        <p style="margin-top:5px"><b>PP4</b> — Knowledge sits with few individuals — single point of failure</p>
+        <div id="pp-dynamic-People" class="pp-dynamic-section"></div>
+        <div class="pp-card-fix">
+          <b>Fixes:</b> AM training programme (F1) · Expert/buddy rotation (F2) · Live SOP portal (S5) · Pre-ticket checklist in V2 (Q4)
+        </div>
+      </div>
+    </div>
+
+    <!-- Process & Ownership -->
+    <!-- Process & Ownership -->
+    <div class="pp-card theme-process">
+      <div class="pp-card-hdr" style="background:#FFF7ED;border-bottom:1px solid #FB923C">
+        <span style="font-size:16px">⚙️</span>
+        <span style="color:#C2410C;font-weight:700">Process &amp; Ownership</span>
+      </div>
+      <div class="pp-card-body">
+        <p><b>PP5</b> — No SOPs or TATs for common change requests</p>
+        <p style="margin-top:5px"><b>PP6</b> — OPD activation and rollout-support sit with separate teams; AMs don't know whom to call</p>
+        <p style="margin-top:5px"><b>PP7</b> — No single point of contact per corporate / change type</p>
+        <p style="margin-top:5px"><b>PP8</b> — Every minor change requires AM validation — impractical at scale</p>
+        <p style="margin-top:5px"><b>PP9</b> — Requests denied without explaining why or offering alternative</p>
+        <div id="pp-dynamic-Process" class="pp-dynamic-section"></div>
+        <div class="pp-card-fix">
+          <b>Fixes:</b> SPOC matrix (Q1) · SOP + TAT for top 5 types (Q2) · Resolution-with-alternative template (F8) · Standing approvals matrix (F10) · Self-service admin tool (S1)
+        </div>
+      </div>
+    </div>
+
+    <!-- Communication & Coordination -->
+    <div class="pp-card theme-comm">
+      <div class="pp-card-hdr" style="background:#ECFDF5;border-bottom:1px solid #34D399">
+        <span style="font-size:16px">🤝</span>
+        <span style="color:#065F46;font-weight:700">Communication &amp; Coordination</span>
+      </div>
+      <div class="pp-card-body">
+        <p><b>PP10</b> — AMs liaise with multiple internal teams for a single change</p>
+        <p style="margin-top:5px"><b>PP11</b> — Multiple follow-ups required to move tasks forward</p>
+        <p style="margin-top:5px"><b>PP12</b> — Calls to Ops Enablement and Support frequently unanswered</p>
+        <p style="margin-top:5px"><b>PP13</b> — Some interactions perceived as unhelpful / rude</p>
+        <p style="margin-top:5px"><b>PP14</b> — Clients escalate to AM before AM is aware of the issue</p>
+        <div id="pp-dynamic-Communication" class="pp-dynamic-section"></div>
+        <div class="pp-card-fix">
+          <b>Fixes:</b> Single ticket entry point via SPOC (Q1) · Shared go-live tracker (Q8) · Defined response-time SLA (Q5) · Soft-skills refresher (F9) · Proactive monitoring dashboard (S4)
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Quality -->
+    <div class="pp-card theme-data">
+      <div class="pp-card-hdr" style="background:#FEF9C3;border-bottom:1px solid #FACC15">
+        <span style="font-size:16px">📋</span>
+        <span style="color:#854D0E;font-weight:700">Data Quality</span>
+      </div>
+      <div class="pp-card-body">
+        <p><b>PP15</b> — Initial member data is unfiltered / unsanitised</p>
+        <p style="margin-top:5px"><b>PP16</b> — Endorsement data updates consistently delayed</p>
+        <p style="margin-top:5px"><b>PP17</b> — Tickets raised without verifying DOB, email, MA IDs, duplicate employee IDs</p>
+        <p style="margin-top:5px"><b>PP18</b> — Clients propose solutions instead of stating problems</p>
+        <div id="pp-dynamic-Data" class="pp-dynamic-section"></div>
+        <div class="pp-card-fix">
+          <b>Fixes:</b> Pre-ticket validation checklist in V2 (Q4) · Mandatory data-quality validation (Q3) · Pre-upload de-duplication script (F4) · Endorsement SLA with clients (F7) · Standard intake form forcing problem-statement format
+        </div>
+      </div>
+    </div>
+
+    <!-- Tools & Systems -->
+    <div class="pp-card theme-system">
+      <div class="pp-card-hdr" style="background:#EFF6FF;border-bottom:1px solid #60A5FA">
+        <span style="font-size:16px">🖥️</span>
+        <span style="color:#1E40AF;font-weight:700">Tools &amp; Systems</span>
+      </div>
+      <div class="pp-card-body">
+        <p><b>PP19</b> — Login creation in CMS delayed — 24-hr SLA not met</p>
+        <p style="margin-top:5px"><b>PP20</b> — Password reset is manual — absence of operator stalls go-live</p>
+        <p style="margin-top:5px"><b>PP21</b> — Test users often missing from CMS, blocking pre-go-live validation</p>
+        <p style="margin-top:5px"><b>PP22</b> — Features working in staging fail in production (drift)</p>
+        <p style="margin-top:5px"><b>PP23</b> — Last-minute domain changes break CAS/IWP/Auth sync</p>
+        <div id="pp-dynamic-Systems" class="pp-dynamic-section"></div>
+        <div class="pp-card-fix">
+          <b>Fixes:</b> Self-service password reset (Q6) · Auto-provision test users (F5) · Domain freeze T–7 + sync script (F6) · Production-parity framework (S2) · Automated login creation from CAS (S3)
+        </div>
+      </div>
+    </div>
+
+    <!-- Planning & Prioritisation -->
+    <div class="pp-card theme-plan">
+      <div class="pp-card-hdr" style="background:#F5F3FF;border-bottom:1px solid #A78BFA">
+        <span style="font-size:16px">📅</span>
+        <span style="color:#5B21B6;font-weight:700">Planning &amp; Prioritisation</span>
+      </div>
+      <div class="pp-card-body">
+        <p><b>PP24</b> — Requirements arrive at last minute after many iterations</p>
+        <p style="margin-top:5px"><b>PP25</b> — Teams not given advance notice of go-live dates</p>
+        <p style="margin-top:5px"><b>PP26</b> — Final go-live confirmation often missing</p>
+        <p style="margin-top:5px"><b>PP27</b> — Tasks tagged urgent without justification</p>
+        <p style="margin-top:5px"><b>PP28</b> — Tickets submitted in wrong service-desk bucket</p>
+        <div id="pp-dynamic-Planning" class="pp-dynamic-section"></div>
+        <div class="pp-card-fix">
+          <b>Fixes:</b> Go-live calendar published 2 weeks ahead (Q2) · Mandatory go-live sign-off ticket (Q10) · Urgency rubric + reviewer (Q9) · Dropdown-driven ticket form (F3) · Change-request cut-off T–5 days · Client-facing onboarding playbook (S6)
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     TAB 4 — SUCCESS METRICS
+═══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-metrics">
+  <div class="section-label">8 Success Metrics — owned, measured monthly, reported in Onboarding Lead's review pack</div>
+  <div class="metrics-grid">
+
+    <div class="metric-card m-grn">
+      <div class="metric-id">M1 · Go-Live SLA Adherence</div>
+      <div class="metric-name">On-time Go-Lives</div>
+      <div class="metric-target">≥ 90%</div>
+      <div class="metric-def">% of go-lives delivered on the originally-committed date</div>
+      <div class="metric-owner">Onboarding Lead</div>
+    </div>
+
+    <div class="metric-card m-blu">
+      <div class="metric-id">M2 · End-to-End TAT</div>
+      <div class="metric-name">Onboarding Cycle Time</div>
+      <div class="metric-target">≤ 10 days</div>
+      <div class="metric-def">Median business days from ticket raised to OE portal live (standard rollout)</div>
+      <div class="metric-owner">Onboarding</div>
+    </div>
+
+    <div class="metric-card m-grn">
+      <div class="metric-id">M3 · First-Time-Right Tickets</div>
+      <div class="metric-name">Clean Ticket Rate</div>
+      <div class="metric-target">≥ 95%</div>
+      <div class="metric-def">% of onboarding tickets not returned for incomplete data</div>
+      <div class="metric-owner">Onboarding + AM</div>
+    </div>
+
+    <div class="metric-card m-pur">
+      <div class="metric-id">M4 · AM CSAT</div>
+      <div class="metric-name">AM Satisfaction Score</div>
+      <div class="metric-target">+15 pts</div>
+      <div class="metric-def">Quarterly survey of AMs on the onboarding experience vs. baseline</div>
+      <div class="metric-owner">Onboarding Lead</div>
+    </div>
+
+    <div class="metric-card m-grn">
+      <div class="metric-id">M5 · Support SLA Compliance</div>
+      <div class="metric-name">Password / Login TAT</div>
+      <div class="metric-target">≥ 95%</div>
+      <div class="metric-def">% of password-reset / login-creation tickets resolved within published TAT</div>
+      <div class="metric-owner">IT</div>
+    </div>
+
+    <div class="metric-card m-red">
+      <div class="metric-id">M6 · Staging vs. Production Parity</div>
+      <div class="metric-name">Drift Defects</div>
+      <div class="metric-target">= 0</div>
+      <div class="metric-def">Number of defects in production not caught in staging per release</div>
+      <div class="metric-owner">IT</div>
+    </div>
+
+    <div class="metric-card m-blu">
+      <div class="metric-id">M7 · Misrouted Tickets</div>
+      <div class="metric-name">Routing Accuracy</div>
+      <div class="metric-target">≤ 2%</div>
+      <div class="metric-def">% of tickets requiring manual re-routing to correct queue</div>
+      <div class="metric-owner">Service Desk</div>
+    </div>
+
+    <div class="metric-card m-grn">
+      <div class="metric-id">M8 · Endorsement-Data SLA</div>
+      <div class="metric-name">Monthly Endorsement Rate</div>
+      <div class="metric-target">≥ 90%</div>
+      <div class="metric-def">% of monthly endorsements received within the agreed client window</div>
+      <div class="metric-owner">Account Mgmt</div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:28px;background:var(--white);border:1px solid var(--line);border-radius:8px;padding:20px">
+    <div style="font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.6px">Headline Findings</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-size:12px;color:var(--ink2);line-height:1.5">
+      <div style="border-left:3px solid #DC2626;padding-left:10px">
+        <b style="color:var(--ink);display:block;margin-bottom:3px">~60% of delays trace to two root causes</b>
+        Lack of process ownership / SOPs and weak coordination across departments are the dominant structural drivers.
+      </div>
+      <div style="border-left:3px solid #2563EB;padding-left:10px">
+        <b style="color:var(--ink);display:block;margin-bottom:3px">Data validation = highest-leverage quick win</b>
+        Pre-ticket validation of DOB, email, MA IDs, and duplicate checks would eliminate a recurring rework class costing days per rollout.
+      </div>
+      <div style="border-left:3px solid #16A34A;padding-left:10px">
+        <b style="color:var(--ink);display:block;margin-bottom:3px">V2 template + SOP publish = single biggest lever</b>
+        A consolidated validated template and published SOP/TAT for the top five rollout types address the majority of reported pain points.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 5 — PROJECT TRACKER DASHBOARD
+═══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-tracker-dash">
+  <div class="section-label" style="display:flex;justify-content:space-between;align-items:center">
+    <span>Project Tracker — Live Dashboard</span>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span id="trk-clock" style="font-family:var(--mono);font-size:10px;color:var(--ink3);text-transform:none;letter-spacing:0"></span>
+      <button class="ci-trigger-btn" onclick="openCreateModal()" style="font-size:10px;padding:5px 12px">＋ Create Item</button>
+    </div>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="trk-kpi-strip">
+    <div class="trk-kpi kpi-total">
+      <div class="trk-kpi-lbl">Total Items</div>
+      <div class="trk-kpi-val" id="kpi-total">58</div>
+      <div class="trk-kpi-sub">28 tasks + 30 pain points</div>
+      <div class="trk-kpi-bar-wrap"><div class="trk-kpi-bar" id="kbar-total" style="background:#0C1F3F;width:100%"></div></div>
+    </div>
+    <div class="trk-kpi kpi-open">
+      <div class="trk-kpi-lbl">Open</div>
+      <div class="trk-kpi-val" id="kpi-open">—</div>
+      <div class="trk-kpi-sub" id="kpi-open-sub">not yet started</div>
+      <div class="trk-kpi-bar-wrap"><div class="trk-kpi-bar" id="kbar-open" style="background:#2563EB"></div></div>
+    </div>
+    <div class="trk-kpi kpi-inprog">
+      <div class="trk-kpi-lbl">In Progress</div>
+      <div class="trk-kpi-val" id="kpi-ip">—</div>
+      <div class="trk-kpi-sub" id="kpi-ip-sub">actively running</div>
+      <div class="trk-kpi-bar-wrap"><div class="trk-kpi-bar" id="kbar-ip" style="background:#D97706"></div></div>
+    </div>
+    <div class="trk-kpi kpi-done">
+      <div class="trk-kpi-lbl">Resolved</div>
+      <div class="trk-kpi-val" id="kpi-done">—</div>
+      <div class="trk-kpi-sub" id="kpi-done-sub">completion rate</div>
+      <div class="trk-kpi-bar-wrap"><div class="trk-kpi-bar" id="kbar-done" style="background:#16A34A"></div></div>
+    </div>
+    <div class="trk-kpi kpi-hold">
+      <div class="trk-kpi-lbl">On Hold</div>
+      <div class="trk-kpi-val" id="kpi-hold">—</div>
+      <div class="trk-kpi-sub">blocked items</div>
+      <div class="trk-kpi-bar-wrap"><div class="trk-kpi-bar" id="kbar-hold" style="background:#7C3AED"></div></div>
+    </div>
+  </div>
+
+  <!-- ROW 1: Phase progress + Owner workload + Status donut -->
+  <div class="trk-dash-row cols-3">
+    <div class="trk-card">
+      <div class="trk-card-hdr">Phase Completion <span id="ph-overall-pct">0% overall</span></div>
+      <div id="phase-bars-dash"></div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line2)">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--ink3);margin-bottom:8px">Quick Wins Progress</div>
+        <div id="qw-progress"></div>
+      </div>
+    </div>
+    <div class="trk-card">
+      <div class="trk-card-hdr">Pending by Owner <span id="owner-total-pending"></span></div>
+      <div id="owner-summary-dash" style="max-height:260px;overflow-y:auto"></div>
+    </div>
+    <div class="trk-card">
+      <div class="trk-card-hdr">Status Distribution</div>
+      <div class="trk-chart-box" style="height:160px;margin-bottom:10px">
+        <canvas id="donut-chart" role="img" aria-label="Status distribution donut chart">Distribution of Open, In Progress, Resolved and On Hold items.</canvas>
+      </div>
+      <div id="donut-legend" style="display:flex;flex-direction:column;gap:5px"></div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Owner bar chart + Theme resolution -->
+  <div class="trk-dash-row cols-2">
+    <div class="trk-card">
+      <div class="trk-card-hdr">Workload by Owner — Pending Tasks</div>
+      <div class="trk-chart-box" style="height:220px">
+        <canvas id="owner-chart" role="img" aria-label="Stacked bar chart showing pending tasks by owner, split by status.">Pending items by owner and status.</canvas>
+      </div>
+    </div>
+    <div class="trk-card">
+      <div class="trk-card-hdr">Pain Point Resolution by Theme</div>
+      <div class="trk-chart-box" style="height:220px">
+        <canvas id="theme-chart" role="img" aria-label="Bar chart of pain point resolution by theme.">Resolved vs total pain points per theme.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Priority breakdown + Activity feed -->
+  <div class="trk-dash-row cols-2">
+    <div class="trk-card">
+      <div class="trk-card-hdr">Task Completion Rate by Phase &amp; Priority</div>
+      <div class="trk-chart-box" style="height:200px">
+        <canvas id="priority-chart" role="img" aria-label="Grouped bar chart of task completion by phase and priority.">Completion by phase and priority.</canvas>
+      </div>
+    </div>
+    <div class="trk-card">
+      <div class="trk-card-hdr">Recent Activity <span id="act-count"></span></div>
+      <div id="activity-feed-dash"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 6 — MASTER TRACKER (Tasks + Pain Points unified)
+═══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-tracker-master">
+  <div class="section-label" style="display:flex;justify-content:space-between;align-items:center">
+    <span>Master Tracker — All Items (Initiatives + Pain Points) · Unified Dataset</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span id="mt-saved-indicator" style="font-size:10px;font-family:var(--mono);color:#16A34A;opacity:0;transition:opacity 0.5s">✓ Saved</span>
+      <button onclick="exportCSV()" style="font-size:10px;font-weight:600;font-family:var(--font);padding:6px 12px;border:1px solid var(--line);border-radius:5px;background:var(--white);color:var(--ink2);cursor:pointer">⬇ Export CSV</button>
+      <button class="ci-trigger-btn" onclick="openCreateModal()">＋ Create Item</button>
+    </div>
+  </div>
+
+  <!-- Inline KPI strip for Master Tracker -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px" id="mt-kpi-strip">
+    <div class="trk-kpi kpi-total" style="padding:10px 14px">
+      <div class="trk-kpi-lbl">Total</div>
+      <div class="trk-kpi-val" id="mt-kpi-total" style="font-size:22px">58</div>
+      <div class="trk-kpi-bar-wrap"><div class="trk-kpi-bar" style="background:#0C1F3F;width:100%"></div></div>
+    </div>
+    <div class="trk-kpi kpi-open" style="padding:10px 14px">
+      <div class="trk-kpi-lbl">Open</div>
+      <div class="trk-kpi-val" id="mt-kpi-open" style="font-size:22px">—</div>
+      <div class="trk-kpi-bar-wrap"><div class="trk-kpi-bar" id="mt-kbar-open" style="background:#2563EB"></div></div>
+    </div>
+    <div class="trk-kpi kpi-inprog" style="padding:10px 14px">
+      <div class="trk-kpi-lbl">In Progress</div>
+      <div class="trk-kpi-val" id="mt-kpi-ip" style="font-size:22px">—</div>
+      <div class="trk-kpi-bar-wrap"><div class="trk-kpi-bar" id="mt-kbar-ip" style="background:#D97706"></div></div>
+    </div>
+    <div class="trk-kpi kpi-done" style="padding:10px 14px">
+      <div class="trk-kpi-lbl">Resolved</div>
+      <div class="trk-kpi-val" id="mt-kpi-done" style="font-size:22px">—</div>
+      <div class="trk-kpi-bar-wrap"><div class="trk-kpi-bar" id="mt-kbar-done" style="background:#16A34A"></div></div>
+    </div>
+    <div class="trk-kpi kpi-hold" style="padding:10px 14px">
+      <div class="trk-kpi-lbl">On Hold</div>
+      <div class="trk-kpi-val" id="mt-kpi-hold" style="font-size:22px">—</div>
+      <div class="trk-kpi-bar-wrap"><div class="trk-kpi-bar" id="mt-kbar-hold" style="background:#7C3AED"></div></div>
+    </div>
+  </div>
+
+  <div class="trk-filter-bar">
+    <span class="trk-filter-lbl">Filter:</span>
+    <select class="trk-fsel" id="mt-type" onchange="renderMasterTable()">
+      <option value="">All types</option>
+      <option value="task">Initiatives only</option>
+      <option value="pain_point">Pain Points only</option>
+    </select>
+    <select class="trk-fsel" id="mt-phase" onchange="renderMasterTable()">
+      <option value="">All phases</option>
+      <option value="30">Days 0–30</option>
+      <option value="60">Days 31–60</option>
+      <option value="90">Days 61–90</option>
+    </select>
+    <select class="trk-fsel" id="mt-owner" onchange="renderMasterTable()"><option value="">All owners</option></select>
+    <select class="trk-fsel" id="mt-status" onchange="renderMasterTable()">
+      <option value="">All statuses</option>
+      <option>Open</option><option>In Progress</option><option>Resolved</option><option>On Hold</option>
+    </select>
+    <select class="trk-fsel" id="mt-priority" onchange="renderMasterTable()">
+      <option value="">All priorities</option>
+      <option>High</option><option>Med</option><option>Low</option>
+    </select>
+    <select class="trk-fsel" id="mt-theme" onchange="renderMasterTable()">
+      <option value="">All themes</option>
+      <option>People</option><option>Process</option><option>Communication</option>
+      <option>Data</option><option>Systems</option><option>Planning</option>
+    </select>
+    <select class="trk-fsel" id="mt-qw" onchange="renderMasterTable()">
+      <option value="">All</option><option value="1">Quick Wins only</option>
+    </select>
+    <span style="font-size:10px;color:var(--ink3);font-family:var(--mono);margin-left:auto" id="mt-row-count"></span>
+  </div>
+
+  <div class="trk-table-wrap">
+    <table class="trk-table">
+      <thead>
+        <tr>
+          <th style="cursor:pointer" onclick="sortMaster('id')">ID ↕</th>
+          <th>Title / Description</th>
+          <th style="cursor:pointer" onclick="sortMaster('type')">Type ↕</th>
+          <th style="cursor:pointer" onclick="sortMaster('phase')">Phase ↕</th>
+          <th style="cursor:pointer" onclick="sortMaster('owner')">Owner ↕</th>
+          <th style="cursor:pointer" onclick="sortMaster('priority')">Priority ↕</th>
+          <th>Theme / Tag</th>
+          <th style="cursor:pointer" onclick="sortMaster('status')">Status ↕</th>
+          <th>Notes / Measure</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="master-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 8 — KANBAN BOARD
+═══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-tracker-kanban">
+  <div class="section-label">Kanban Board — Tasks &amp; Pain Points · Drag &amp; drop cards between columns to update status instantly · Default view: All Items</div>
+  <div class="trk-filter-bar">
+    <span class="trk-filter-lbl">View:</span>
+    <select class="trk-fsel" id="kb-view" onchange="renderKanban()"><option value="all" selected>All Items</option><option value="tasks">Tasks (30/60/90 Plan)</option><option value="pp">Pain Points</option></select>
+    <select class="trk-fsel" id="kb-owner" onchange="renderKanban()"><option value="">All owners</option></select>
+    <select class="trk-fsel" id="kb-phase" onchange="renderKanban()"><option value="">All phases</option><option value="30">Days 0–30</option><option value="60">Days 31–60</option><option value="90">Days 61–90</option></select>
+    <select class="trk-fsel" id="kb-priority" onchange="renderKanban()"><option value="">All priorities</option><option value="High">High</option><option value="Med">Med</option><option value="Low">Low</option></select>
+  </div>
+  <div class="trk-kb-board">
+    <div class="trk-kb-col kbh-open">
+      <div class="trk-kb-col-hdr"><span class="trk-kb-col-title kbt-open">● Open</span><span class="trk-kb-count" id="kbc-open">0</span></div>
+      <div id="kbl-open"></div>
+    </div>
+    <div class="trk-kb-col kbh-inprog">
+      <div class="trk-kb-col-hdr"><span class="trk-kb-col-title kbt-inprog">● In Progress</span><span class="trk-kb-count" id="kbc-ip">0</span></div>
+      <div id="kbl-ip"></div>
+    </div>
+    <div class="trk-kb-col kbh-done">
+      <div class="trk-kb-col-hdr"><span class="trk-kb-col-title kbt-done">● Resolved</span><span class="trk-kb-count" id="kbc-done">0</span></div>
+      <div id="kbl-done"></div>
+    </div>
+    <div class="trk-kb-col kbh-hold">
+      <div class="trk-kb-col-hdr"><span class="trk-kb-col-title kbt-hold">● On Hold</span><span class="trk-kb-count" id="kbc-hold">0</span></div>
+      <div id="kbl-hold"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   UNIFIED DATA — Single source of truth
+   All items normalised into MASTER_DATA array.
+   type: 'task' | 'pain_point'
+═══════════════════════════════════════════════════════════════ */
+const TASKS_RAW = [
+  {id:'Q1',phase:'30',title:'Designate SPOC per stakeholder team (AM↔OB↔EN↔IT)',owner:'Onboarding Lead',priority:'High',qw:true,measure:'SPOC matrix published; in use on every ticket',status:'Open'},
+  {id:'Q2',phase:'30',title:'Publish SOP + TAT for top 5 rollout types',owner:'Onboarding',priority:'High',qw:true,measure:'SOP repository live; AMs trained',status:'Open'},
+  {id:'Q3',phase:'30',title:'Roll out V2 onboarding template with mandatory fields',owner:'Onboarding',priority:'High',qw:true,measure:'100% of new tickets use V2 within 30 days',status:'In Progress'},
+  {id:'Q4',phase:'30',title:'Pre-ticket data-quality checklist embedded in V2',owner:'Onboarding',priority:'High',qw:true,measure:'Tickets returned for incomplete data ≤ 5%',status:'In Progress'},
+  {id:'Q5',phase:'30',title:'Define & publish TAT/SLA for password reset & login creation',owner:'IT',priority:'High',qw:false,measure:'TAT visible on every ticket; weekly compliance report',status:'Open'},
+  {id:'Q6',phase:'30',title:'Self-service password reset for AMs',owner:'IT',priority:'High',qw:false,measure:'AM-raised password tickets reduced >70%',status:'Open'},
+  {id:'Q7',phase:'30',title:'Weekly tri-team stand-up (AM, Onboarding, Enrolment)',owner:'Onboarding Lead',priority:'High',qw:false,measure:'4 stand-ups completed; standing agenda',status:'In Progress'},
+  {id:'Q8',phase:'30',title:'Shared go-live tracker accessible to AMs',owner:'Onboarding',priority:'Med',qw:false,measure:'AMs check tracker before raising follow-up calls',status:'Open'},
+  {id:'Q9',phase:'30',title:'Urgency rubric + reviewer per service-desk queue',owner:'Service Desk',priority:'Med',qw:true,measure:'False-urgency tickets reduced',status:'Open'},
+  {id:'Q10',phase:'30',title:'Mandatory go-live sign-off ticket & checklist',owner:'Onboarding',priority:'High',qw:true,measure:'No live go-live without signed checklist',status:'Open'},
+  {id:'F1',phase:'60',title:'AM training programme & knowledge-base launch',owner:'L&D',priority:'High',qw:false,measure:'Module completion ≥ 90% of active AMs',status:'Open'},
+  {id:'F2',phase:'60',title:'AM expert / buddy rotation per region',owner:'Onboarding',priority:'Med',qw:false,measure:'Each region has named buddy; quarterly rotation',status:'Open'},
+  {id:'F3',phase:'60',title:'Ticketing redesign — dropdown form & routing rules',owner:'Service Desk',priority:'Med',qw:false,measure:'Misrouted tickets ≤ 2%',status:'Open'},
+  {id:'F4',phase:'60',title:'Pre-upload de-duplication script in CAS',owner:'IT',priority:'High',qw:false,measure:'Duplicate-ID errors at upload → 0',status:'Open'},
+  {id:'F5',phase:'60',title:'Auto-provision standard test-user set per corporate',owner:'IT',priority:'High',qw:false,measure:'Test users available on day-1 of staging',status:'Open'},
+  {id:'F6',phase:'60',title:'Domain-change freeze (T–7 days) + sync-validation script',owner:'IT',priority:'High',qw:false,measure:'Zero CAS/IWP/Auth domain-mismatch incidents',status:'On Hold'},
+  {id:'F7',phase:'60',title:'Endorsement-data SLA agreed with each major client',owner:'Account Mgmt',priority:'Med',qw:false,measure:'Endorsements received within agreed SLA ≥ 90%',status:'Open'},
+  {id:'F8',phase:'60',title:'Resolution-with-alternative template + mandatory reason code',owner:'Onboarding',priority:'Med',qw:false,measure:'Every rejected ticket has reason + alternative',status:'Open'},
+  {id:'F9',phase:'60',title:'Soft-skills refresher for Ops Enablement / Support',owner:'L&D',priority:'Med',qw:false,measure:'AM CSAT ≥ baseline + 10 points',status:'Open'},
+  {id:'F10',phase:'60',title:'Standing approvals matrix — routine changes skip AM sign-off',owner:'Onboarding',priority:'Med',qw:false,measure:'AM hours on routine validation reduced',status:'Open'},
+  {id:'S1',phase:'90',title:'Self-service admin tool for common config changes',owner:'IT',priority:'High',qw:false,measure:'Top 10 change types are self-serve',status:'Open'},
+  {id:'S2',phase:'90',title:'Production-parity testing framework',owner:'IT',priority:'High',qw:false,measure:'Staging-vs-production drift defects → 0',status:'On Hold'},
+  {id:'S3',phase:'90',title:'Automated login creation from CAS approval',owner:'IT',priority:'High',qw:false,measure:'Login creation ≤ 1 hour of approval',status:'Open'},
+  {id:'S4',phase:'90',title:'Proactive issue-monitoring dashboard for AMs',owner:'IT',priority:'Med',qw:false,measure:'AM detects ≥ 80% of issues before client escalation',status:'Open'},
+  {id:'S5',phase:'90',title:'Live, searchable SOP / knowledge-base portal',owner:'Onboarding',priority:'High',qw:false,measure:'Search-driven self-service replaces email queries',status:'Open'},
+  {id:'S6',phase:'90',title:'Customer-facing onboarding playbook',owner:'Account Mgmt',priority:'Med',qw:false,measure:'Adopted by top 10 corporates',status:'Open'},
+  {id:'S7',phase:'90',title:'Pre-approved welcome-mailer template catalogue',owner:'Onboarding',priority:'Low',qw:false,measure:'Mailer customisation lead time ≤ 1 day',status:'Open'},
+  {id:'S8',phase:'90',title:'Quarterly process review cadence with all four teams',owner:'Onboarding Lead',priority:'Med',qw:false,measure:'Review log + revised SOPs each quarter',status:'Open'},
+];
+
+const PAINPOINTS_RAW = [
+  {id:'PP1',rawId:1,title:'AMs lack end-to-end process understanding',theme:'People',measure:'Onboarding training + searchable knowledge base',owner:'L&D',priority:'High',qw:false,status:'Open'},
+  {id:'PP2',rawId:2,title:'Hygiene checks skipped before raising tickets',theme:'People',measure:'Pre-ticket validation checklist enforced via V2 template',owner:'Onboarding',priority:'High',qw:true,status:'In Progress'},
+  {id:'PP3',rawId:3,title:'No SOPs / TATs for common changes',theme:'Process',measure:'Publish SOP + TAT for top 5 rollout types',owner:'Onboarding',priority:'High',qw:true,status:'In Progress'},
+  {id:'PP4',rawId:4,title:'Unclear ownership across processes',theme:'Process',measure:'Designate Single Point of Contact per stakeholder team',owner:'Onboarding Lead',priority:'High',qw:true,status:'Open'},
+  {id:'PP5',rawId:5,title:'No SPOC for OPD / portal rollout',theme:'Process',measure:'Publish SPOC matrix; rotate weekly on-call',owner:'Onboarding Lead',priority:'High',qw:true,status:'Open'},
+  {id:'PP6',rawId:6,title:'Every minor change requires AM validation',theme:'Process',measure:'Define standing approvals + delegated authority',owner:'Onboarding',priority:'Med',qw:false,status:'Open'},
+  {id:'PP7',rawId:7,title:'Changes denied without alternatives',theme:'Process',measure:'Resolution-with-alternative template; mandatory reason code',owner:'Onboarding',priority:'Med',qw:true,status:'Open'},
+  {id:'PP8',rawId:8,title:'AMs liaise with multiple teams per change',theme:'Communication',measure:'Single ticket entry point; Onboarding routes internally',owner:'Onboarding',priority:'High',qw:false,status:'Open'},
+  {id:'PP9',rawId:9,title:'Frequent follow-ups required',theme:'Communication',measure:'Status visibility on every ticket via shared tracker',owner:'Onboarding',priority:'Med',qw:true,status:'Open'},
+  {id:'PP10',rawId:10,title:'Calls to Ops Enablement / Support unanswered',theme:'Communication',measure:'Defined response-time SLA; on-call roster published',owner:'Ops Enablement',priority:'High',qw:true,status:'Open'},
+  {id:'PP11',rawId:11,title:'Rude / unhelpful interactions',theme:'Communication',measure:'Soft-skills refresher; escalation path',owner:'L&D',priority:'Med',qw:false,status:'Open'},
+  {id:'PP12',rawId:12,title:'Clients escalate before AM is aware',theme:'Communication',measure:'Proactive issue-monitoring dashboard for AMs',owner:'IT',priority:'Med',qw:false,status:'Open'},
+  {id:'PP13',rawId:13,title:'Unfiltered inception data',theme:'Data',measure:'Mandatory data-quality validation before submission',owner:'Onboarding',priority:'High',qw:false,status:'Open'},
+  {id:'PP14',rawId:14,title:'Missing DOB / email / MA IDs in tickets',theme:'Data',measure:'Required-field validation in V2 template',owner:'Onboarding',priority:'High',qw:true,status:'In Progress'},
+  {id:'PP15',rawId:15,title:'Duplicate employee IDs in CMS',theme:'Data',measure:'Pre-upload de-duplication script in CAS',owner:'IT',priority:'High',qw:false,status:'Open'},
+  {id:'PP16',rawId:16,title:'Endorsement data updates consistently delayed',theme:'Data',measure:'SLA agreed with client for monthly endorsements',owner:'Account Mgmt',priority:'Med',qw:false,status:'Open'},
+  {id:'PP17',rawId:17,title:'Clients propose solutions instead of stating problems',theme:'Data',measure:'Standard intake form forcing problem-statement format',owner:'Account Mgmt',priority:'Low',qw:true,status:'Open'},
+  {id:'PP18',rawId:18,title:'Login creation breaches 24-hr SLA',theme:'Systems',measure:'Automate login creation from CAS approval; alerting on breach',owner:'IT',priority:'High',qw:false,status:'On Hold'},
+  {id:'PP19',rawId:19,title:'Password reset depends on support availability',theme:'Systems',measure:'Self-service password reset for AMs; backup operator',owner:'IT',priority:'High',qw:true,status:'Open'},
+  {id:'PP20',rawId:20,title:'Test users missing in CMS pre go-live',theme:'Systems',measure:'Auto-provision standard test-user set per corporate',owner:'IT',priority:'High',qw:false,status:'Open'},
+  {id:'PP21',rawId:21,title:'Staging-vs-production drift',theme:'Systems',measure:'Production-parity testing framework + release checklist',owner:'IT',priority:'High',qw:false,status:'On Hold'},
+  {id:'PP22',rawId:22,title:'Last-minute domain changes break CAS/IWP/Auth',theme:'Systems',measure:'Domain-change freeze T–7 days; sync-validation script',owner:'IT',priority:'High',qw:false,status:'Open'},
+  {id:'PP23',rawId:23,title:'Last-minute requirement changes',theme:'Planning',measure:'Change-request cut-off T–5 days; client-side change rule',owner:'Account Mgmt',priority:'High',qw:true,status:'Open'},
+  {id:'PP24',rawId:24,title:'No advance notice of go-live dates',theme:'Planning',measure:'Go-live calendar published 2 weeks ahead; standing review',owner:'Onboarding',priority:'High',qw:true,status:'In Progress'},
+  {id:'PP25',rawId:25,title:'No final go-live confirmation',theme:'Planning',measure:'Mandatory go-live sign-off ticket; checklist published',owner:'Onboarding',priority:'High',qw:true,status:'Open'},
+  {id:'PP26',rawId:26,title:'False urgency tagging on tickets',theme:'Planning',measure:'Urgency rubric + reviewer per service-desk queue',owner:'Service Desk',priority:'Med',qw:true,status:'Open'},
+  {id:'PP27',rawId:27,title:'Tickets submitted in wrong support buckets',theme:'Planning',measure:'Dropdown-driven ticket form; routing rules',owner:'Service Desk',priority:'Med',qw:true,status:'Open'},
+  {id:'PP28',rawId:28,title:'Iterations under tight timelines',theme:'Planning',measure:'Capped iteration cycles + AM-side change governance',owner:'Account Mgmt',priority:'Med',qw:false,status:'Open'},
+  {id:'PP29',rawId:29,title:'Front-end / portal bug fixes delayed',theme:'Systems',measure:'Dedicated portal bug-fix queue with weekly SLA',owner:'IT',priority:'Med',qw:false,status:'Open'},
+  {id:'PP30',rawId:30,title:'Welcome-mailer customisation delays',theme:'Process',measure:'Pre-approved mailer templates + variant catalogue',owner:'Onboarding',priority:'Low',qw:true,status:'Open'},
+];
+
+/* ── Normalise into MASTER_DATA ── */
+const MASTER_DATA = [
+  ...TASKS_RAW.map(t => ({...t, type:'task', theme:null})),
+  ...PAINPOINTS_RAW.map(p => ({...p, type:'pain_point', phase:null, qw: p.qw||false})),
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   STATE — localStorage persistence
+═══════════════════════════════════════════════════════════════ */
+const LS_KEY = 'mediassist_tracker_v3';
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch(e) { return {}; }
+}
+
+function saveState(statusMap) {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(statusMap));
+    flashSaved();
+  } catch(e) {}
+}
+
+function flashSaved() {
+  const el = document.getElementById('mt-saved-indicator');
+  if (!el) return;
+  el.style.opacity = '1';
+  setTimeout(() => el.style.opacity = '0', 1800);
+}
+
+/* Initialise status map from localStorage, falling back to data defaults */
+let STATE = loadState();
+MASTER_DATA.forEach(item => {
+  if (!(item.id in STATE)) STATE[item.id] = item.status || 'Open';
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   LEGACY COMPAT — taskStatus / ppStatus aliases (dashboard uses these)
+═══════════════════════════════════════════════════════════════ */
+const taskStatus = new Proxy(STATE, {
+  get(t, k) { return STATE[k]; },
+  set(t, k, v) { STATE[k] = v; return true; }
+});
+const ppStatus = new Proxy({}, {
+  get(t, k) {
+    // ppStatus[1] → STATE['PP1']
+    const mappedKey = String(k).startsWith('PP') ? k : 'PP' + k;
+    return STATE[mappedKey];
+  },
+  set(t, k, v) {
+    const mappedKey = String(k).startsWith('PP') ? k : 'PP' + k;
+    STATE[mappedKey] = v;
+    return true;
+  }
+});
+
+/* Legacy arrays for dashboard compatibility */
+const TASKS = TASKS_RAW;
+const PAINPOINTS = PAINPOINTS_RAW.map(p => ({
+  ...p,
+  id: p.rawId,   // dashboard expects numeric id
+  pain: p.title,
+  solution: p.measure,
+}));
+
+/* ═══════════════════════════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════════════════════════ */
+const STATUSES = ['Open','In Progress','Resolved','On Hold'];
+const STATUS_STYLE = {
+  'Open':        {bg:'#EFF6FF', color:'#1E40AF', cls:'sel-open'},
+  'In Progress': {bg:'#FFFBEB', color:'#92400E', cls:'sel-inprog'},
+  'Resolved':    {bg:'#F0FDF4', color:'#14532D', cls:'sel-done'},
+  'On Hold':     {bg:'#F5F3FF', color:'#4C1D95', cls:'sel-hold'},
+};
+const PHASE_LABEL = {'30':'Days 0–30','60':'Days 31–60','90':'Days 61–90'};
+const THEME_CLASS = {People:'tc-people',Process:'tc-process',Communication:'tc-comm',Data:'tc-data',Systems:'tc-systems',Planning:'tc-planning'};
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTIVITY LOG
+═══════════════════════════════════════════════════════════════ */
+let actLog = [
+  {text:'<strong>Q3</strong> V2 template rollout marked In Progress',time:'Today, 09:14',col:'#D97706'},
+  {text:'<strong>Q4</strong> Data checklist embedded in V2 — In Progress',time:'Today, 09:14',col:'#D97706'},
+  {text:'<strong>Q7</strong> First tri-team stand-up completed',time:'Yesterday',col:'#D97706'},
+  {text:'<strong>PP14</strong> Required-field validation In Progress',time:'2 days ago',col:'#D97706'},
+  {text:'<strong>PP24</strong> Go-live calendar shared — In Progress',time:'3 days ago',col:'#D97706'},
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════════════ */
+function allStatuses() {
+  return MASTER_DATA.map(item => ({id: item.id, type: item.type, s: STATE[item.id] || 'Open'}));
+}
+function cnt(arr, val) { return arr.filter(x => x === val).length; }
+function pct(n, d) { return d ? Math.round(n / d * 100) : 0; }
+
+function statusSel(id, type, cur) {
+  const st = STATUS_STYLE[cur] || STATUS_STYLE['Open'];
+  return `<select class="trk-status-sel ${st.cls}" style="background:${st.bg};color:${st.color}"
+    onchange="updateItemStatus('${id}', this.value, this)">
+    ${STATUSES.map(s => `<option value="${s}"${s === cur ? ' selected' : ''}>${s}</option>`).join('')}
+  </select>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UNIFIED STATUS UPDATE — single entry point for ALL status changes
+   Called from: Plan tab dropdowns, PP card dropdowns,
+                Master Tracker dropdowns, Kanban drag-drop
+   Guarantees: state saved → all views refreshed → Kanban rebuilt
+═══════════════════════════════════════════════════════════════ */
+function updateItemStatus(id, newStatus, triggerEl) {
+  console.log(`[STATE] updateItemStatus: ${id} → ${newStatus}`);
+
+  // 1. Write to central state
+  STATE[id] = newStatus;
+
+  // 2. Persist immediately
+  saveState(STATE);
+
+  // 3. Style the triggering element inline (avoids flicker on re-render)
+  if (triggerEl) {
+    const st = STATUS_STYLE[newStatus];
+    if (triggerEl.classList.contains('trk-status-sel')) {
+      triggerEl.className = `trk-status-sel ${st.cls}`;
+    }
+    triggerEl.style.background = st.bg;
+    triggerEl.style.color = st.color;
+  }
+
+  // 4. Activity log
+  const st = STATUS_STYLE[newStatus];
+  const ts = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  actLog.unshift({text:`<strong>${id}</strong> moved to <em>${newStatus}</em>`, time:'Just now, '+ts, col: st.color});
+  if (actLog.length > 15) actLog.pop();
+
+  // 5. Propagate to all views
+  updateAllDerivedUI();
+}
+
+/* Legacy alias — keeps old call-sites working */
+function changeStatus(id, type, el) { updateItemStatus(id, el.value, el); }
+function changePlanItemStatus(id, el) { updateItemStatus(id, el.value, el); }
+function changePPCardStatus(id, el) { updateItemStatus(id, el.value, el); }
+
+/* ═══════════════════════════════════════════════════════════════
+   UPDATE ALL DERIVED UI
+   Always rebuilds Kanban (not conditional — fixes the PP sync bug).
+   Master table and Plan tab rebuild fully so dropdowns stay current.
+═══════════════════════════════════════════════════════════════ */
+function updateAllDerivedUI() {
+  // Dashboard charts + KPIs
+  renderDashboard();
+  updateMasterKPIStrip();
+
+  // Master Tracker table (always re-render so status dropdowns are current)
+  renderMasterTable();
+
+  // Kanban — ALWAYS rebuild from full MASTER_DATA + STATE
+  // (Previous bug: Kanban only rebuilt when its panel was *active*.
+  //  This meant PP-panel status changes never reached Kanban.
+  //  Fix: rebuild unconditionally so Kanban is always consistent.)
+  console.log('[KANBAN] Full rebuild triggered by updateAllDerivedUI');
+  renderKanban();
+
+  // Plan tab — refresh dropdowns on all static items
+  injectStatusDropdownsIntoPlanPanel();
+
+  // PP card panel — refresh status dropdowns on all static PP items (PP1–PP30)
+  // Ensures PP card panel stays in sync when status changes come from
+  // Master Tracker, Kanban drag-drop, or any other source.
+  injectStatusDropdownsIntoPPPanel();
+
+  // Re-render dynamic (custom) items in Plan + PP card panels
+  renderCustomTasksIntoPlan();
+  renderCustomPPsIntoCards();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   POPULATE OWNER DROPDOWNS
+═══════════════════════════════════════════════════════════════ */
+function populateOwners() {
+  const allOwners = [...new Set(MASTER_DATA.map(x => x.owner))].sort();
+  ['mt-owner','kb-owner'].forEach(selId => {
+    const el = document.getElementById(selId);
+    if (!el) return;
+    el.innerHTML = '<option value="">All owners</option>' +
+      allOwners.map(o => `<option value="${o}">${o}</option>`).join('');
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MASTER TRACKER — Unified table
+═══════════════════════════════════════════════════════════════ */
+let masterSortKey = null;
+let masterSortAsc = true;
+
+function sortMaster(key) {
+  if (masterSortKey === key) masterSortAsc = !masterSortAsc;
+  else { masterSortKey = key; masterSortAsc = true; }
+  renderMasterTable();
+}
+
+function renderMasterTable() {
+  const typeF     = document.getElementById('mt-type')?.value || '';
+  const phaseF    = document.getElementById('mt-phase')?.value || '';
+  const ownerF    = document.getElementById('mt-owner')?.value || '';
+  const statusF   = document.getElementById('mt-status')?.value || '';
+  const priorityF = document.getElementById('mt-priority')?.value || '';
+  const themeF    = document.getElementById('mt-theme')?.value || '';
+  const qwF       = document.getElementById('mt-qw')?.value || '';
+
+  let rows = MASTER_DATA.filter(item => {
+    const s = STATE[item.id] || 'Open';
+    if (typeF     && item.type !== typeF) return false;
+    if (phaseF    && item.phase !== phaseF) return false;
+    if (ownerF    && item.owner !== ownerF) return false;
+    if (statusF   && s !== statusF) return false;
+    if (priorityF && item.priority !== priorityF) return false;
+    if (themeF    && item.theme !== themeF) return false;
+    if (qwF       && !item.qw) return false;
+    return true;
+  });
+
+  if (masterSortKey) {
+    rows = rows.slice().sort((a, b) => {
+      let av = masterSortKey === 'status' ? (STATE[a.id]||'Open') : (a[masterSortKey]||'');
+      let bv = masterSortKey === 'status' ? (STATE[b.id]||'Open') : (b[masterSortKey]||'');
+      return masterSortAsc ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
+    });
+  }
+
+  const el = document.getElementById('mt-row-count');
+  if (el) el.textContent = rows.length + ' items shown';
+
+  document.getElementById('master-tbody').innerHTML = rows.map(item => {
+    const s = STATE[item.id] || 'Open';
+    const typeTag = item.type === 'task'
+      ? `<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;font-family:var(--mono)">TASK</span>`
+      : `<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;font-family:var(--mono)">PAIN PT</span>`;
+    const phaseTag = item.phase
+      ? `<span class="ptag ptag-${item.phase}">${PHASE_LABEL[item.phase]}</span>`
+      : `<span style="font-size:9.5px;color:var(--ink3)">—</span>`;
+    const themeTag = item.theme
+      ? `<span class="theme-chip ${THEME_CLASS[item.theme]}">${item.theme}</span>`
+      : (item.qw ? `<span class="qw-tag">QW</span>` : '—');
+    return `<tr>
+      <td style="font-family:var(--mono);font-size:10.5px;font-weight:700;white-space:nowrap">${item.id}</td>
+      <td style="font-weight:600;color:var(--ink);max-width:280px;line-height:1.35">${item.title}</td>
+      <td>${typeTag}</td>
+      <td>${phaseTag}</td>
+      <td style="white-space:nowrap">${item.owner}</td>
+      <td><span class="pri-${item.priority.toLowerCase()}">${item.priority}</span></td>
+      <td style="white-space:nowrap">${themeTag}${item.qw && item.theme ? ' <span class="qw-tag">QW</span>' : ''}</td>
+      <td>${statusSel(item.id, item.type, s)}</td>
+      <td style="font-size:10.5px;color:var(--ink3);max-width:200px;font-style:italic;line-height:1.4">${item.measure || ''}</td>
+      <td>
+        <div class="ci-row-actions">
+          <button class="ci-row-btn" onclick="openEditModal('${item.id}')" title="Edit">✏️</button>
+          ${item.isCustom ? `<button class="ci-row-btn del" onclick="deleteItem('${item.id}')" title="Delete">🗑</button>` : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  updateMasterKPIStrip();
+}
+
+function updateMasterKPIStrip() {
+  const all = allStatuses();
+  const total = all.length;
+  const open  = cnt(all.map(x=>x.s), 'Open');
+  const ip    = cnt(all.map(x=>x.s), 'In Progress');
+  const done  = cnt(all.map(x=>x.s), 'Resolved');
+  const hold  = cnt(all.map(x=>x.s), 'On Hold');
+  const setT  = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  const setW  = (id, w) => { const el=document.getElementById(id); if(el) el.style.width=w+'%'; };
+  setT('mt-kpi-total', total);
+  setT('mt-kpi-open', open);
+  setT('mt-kpi-ip', ip);
+  setT('mt-kpi-done', done);
+  setT('mt-kpi-hold', hold);
+  setW('mt-kbar-open', pct(open,total));
+  setW('mt-kbar-ip',   pct(ip,total));
+  setW('mt-kbar-done', pct(done,total));
+  setW('mt-kbar-hold', pct(hold,total));
+  // Update dashboard total KPI too
+  const kpiTotalEl = document.getElementById('kpi-total');
+  if (kpiTotalEl) kpiTotalEl.textContent = total;
+  const kpiSubEl = document.getElementById('kpi-total')?.nextElementSibling;
+  if (kpiSubEl && kpiSubEl.classList.contains('trk-kpi-sub')) {
+    const tasks = MASTER_DATA.filter(x=>x.type==='task').length;
+    const pps   = MASTER_DATA.filter(x=>x.type==='pain_point').length;
+    kpiSubEl.textContent = tasks + ' tasks + ' + pps + ' pain points';
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPORT CSV
+═══════════════════════════════════════════════════════════════ */
+function exportCSV() {
+  const headers = ['ID','Title','Type','Phase','Owner','Priority','Theme','QW','Status','Measure'];
+  const rows = MASTER_DATA.map(item => [
+    item.id,
+    '"'+item.title.replace(/"/g,'""')+'"',
+    item.type,
+    item.phase||'',
+    '"'+item.owner+'"',
+    item.priority,
+    item.theme||'',
+    item.qw?'Yes':'No',
+    STATE[item.id]||'Open',
+    '"'+(item.measure||'').replace(/"/g,'""')+'"',
+  ].join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'mediassist_tracker_export.csv';
+  a.click();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DASHBOARD RENDER (preserved + enhanced)
+═══════════════════════════════════════════════════════════════ */
+let donutChart=null, ownerChart=null, themeChart=null, priorityChart=null;
+
+function renderDashboard() {
+  const all = allStatuses();
+  const total = all.length;
+  const open  = cnt(all.map(x=>x.s), 'Open');
+  const ip    = cnt(all.map(x=>x.s), 'In Progress');
+  const done  = cnt(all.map(x=>x.s), 'Resolved');
+  const hold  = cnt(all.map(x=>x.s), 'On Hold');
+  const donePct = pct(done, total);
+
+  const setT = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  const setW = (id,w) => { const el=document.getElementById(id); if(el) el.style.width=w+'%'; };
+
+  setT('kpi-open', open);
+  setT('kpi-ip', ip);
+  setT('kpi-done', done);
+  setT('kpi-hold', hold);
+  setT('kpi-open-sub', pct(open,total)+'% of total');
+  setT('kpi-ip-sub', pct(ip,total)+'% of total');
+  setT('kpi-done-sub', donePct+'% completion');
+  setW('kbar-open', pct(open,total));
+  setW('kbar-ip',   pct(ip,total));
+  setW('kbar-done', donePct);
+  setW('kbar-hold', pct(hold,total));
+
+  // Phase bars (tasks only for phase tracking)
+  const taskItems = MASTER_DATA.filter(x => x.type === 'task');
+  const phases = [
+    {k:'30', label:'Days 0–30',  col:'#16A34A', ids: taskItems.filter(t=>t.phase==='30').map(t=>t.id)},
+    {k:'60', label:'Days 31–60', col:'#2563EB', ids: taskItems.filter(t=>t.phase==='60').map(t=>t.id)},
+    {k:'90', label:'Days 61–90', col:'#7C3AED', ids: taskItems.filter(t=>t.phase==='90').map(t=>t.id)},
+  ];
+  const totalTasks = taskItems.length;
+  const totalTasksDone = taskItems.filter(t=>STATE[t.id]==='Resolved').length;
+  setT('ph-overall-pct', pct(totalTasksDone,totalTasks)+'% of tasks resolved');
+  let pb = '';
+  phases.forEach(ph => {
+    const r = ph.ids.filter(id => STATE[id]==='Resolved').length;
+    const n = ph.ids.length;
+    const p = pct(r,n);
+    pb += `<div class="trk-phase-row">
+      <span class="trk-phase-lbl">${ph.label}</span>
+      <div class="trk-phase-track"><div class="trk-phase-fill" style="width:${p}%;background:${ph.col}"></div></div>
+      <span class="trk-phase-pct">${p}%</span>
+      <span class="trk-phase-count">${r}/${n}</span>
+    </div>`;
+  });
+  const phEl = document.getElementById('phase-bars-dash');
+  if (phEl) phEl.innerHTML = pb;
+
+  // Quick wins
+  const qwAll  = taskItems.filter(t => t.qw);
+  const qwDone = qwAll.filter(t => STATE[t.id]==='Resolved').length;
+  const qwIP   = qwAll.filter(t => STATE[t.id]==='In Progress').length;
+  const qwP    = pct(qwDone, qwAll.length);
+  const qwEl = document.getElementById('qw-progress');
+  if (qwEl) qwEl.innerHTML = `
+    <div class="trk-phase-row">
+      <span class="trk-phase-lbl" style="font-size:11px">Quick Wins (${qwAll.length})</span>
+      <div class="trk-phase-track"><div class="trk-phase-fill" style="width:${qwP}%;background:#16A34A"></div></div>
+      <span class="trk-phase-pct">${qwP}%</span>
+    </div>
+    <div style="font-size:10px;color:var(--ink3);margin-top:4px">${qwDone} resolved · ${qwIP} in progress · ${qwAll.length-qwDone-qwIP} open</div>`;
+
+  // Owner summary
+  const owners = [...new Set(MASTER_DATA.map(x => x.owner))].sort();
+  let totalPending = 0;
+  let ownerHTML = '';
+  owners.forEach(o => {
+    const items = MASTER_DATA.filter(x => x.owner===o && STATE[x.id]!=='Resolved');
+    if (!items.length) return;
+    totalPending += items.length;
+    const ipN   = items.filter(x => STATE[x.id]==='In Progress').length;
+    const holdN = items.filter(x => STATE[x.id]==='On Hold').length;
+    ownerHTML += `<div class="trk-owner-row">
+      <span class="trk-owner-name">${o}</span>
+      <div class="trk-owner-badges">
+        <span class="trk-badge tb-open">${items.length} pending</span>
+        ${ipN   ? `<span class="trk-badge tb-ip">${ipN} active</span>`  : ''}
+        ${holdN ? `<span class="trk-badge tb-hold">${holdN} hold</span>` : ''}
+      </div>
+    </div>`;
+  });
+  setT('owner-total-pending', totalPending+' pending');
+  const owSumEl = document.getElementById('owner-summary-dash');
+  if (owSumEl) owSumEl.innerHTML = ownerHTML || '<div style="font-size:11px;color:var(--ink3);padding:12px 0">All items resolved! 🎉</div>';
+
+  // Donut
+  const donutData = [open, ip, done, hold];
+  const donutColors = ['#2563EB','#D97706','#16A34A','#7C3AED'];
+  const donutLabels = ['Open','In Progress','Resolved','On Hold'];
+  if (!donutChart) {
+    donutChart = new Chart(document.getElementById('donut-chart'), {
+      type:'doughnut',
+      data:{labels:donutLabels, datasets:[{data:donutData, backgroundColor:donutColors, borderWidth:2, borderColor:'#fff'}]},
+      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, cutout:'70%'}
+    });
+  } else { donutChart.data.datasets[0].data = donutData; donutChart.update(); }
+  const donutLegEl = document.getElementById('donut-legend');
+  if (donutLegEl) donutLegEl.innerHTML = donutLabels.map((l,i) => `
+    <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink2)">
+      <div style="width:10px;height:10px;border-radius:2px;background:${donutColors[i]};flex-shrink:0"></div>
+      <span>${l}</span>
+      <span style="margin-left:auto;font-family:var(--mono);font-weight:600;color:var(--ink)">${donutData[i]}</span>
+      <span style="color:var(--ink3);font-size:10px">${pct(donutData[i],total)}%</span>
+    </div>`).join('');
+
+  // Owner bar chart (stacked)
+  const chartOwners = ['Onboarding','IT','Account Mgmt','Onboarding Lead','L&D','Service Desk','Ops Enablement'];
+  const ownerOpen = chartOwners.map(o => MASTER_DATA.filter(x=>x.owner===o&&STATE[x.id]==='Open').length);
+  const ownerIP   = chartOwners.map(o => MASTER_DATA.filter(x=>x.owner===o&&STATE[x.id]==='In Progress').length);
+  const ownerHold = chartOwners.map(o => MASTER_DATA.filter(x=>x.owner===o&&STATE[x.id]==='On Hold').length);
+  if (!ownerChart) {
+    ownerChart = new Chart(document.getElementById('owner-chart'), {
+      type:'bar',
+      data:{labels:chartOwners, datasets:[
+        {label:'Open',     data:ownerOpen, backgroundColor:'#BFDBFE', borderRadius:3},
+        {label:'In Progress', data:ownerIP, backgroundColor:'#FDE68A', borderRadius:3},
+        {label:'On Hold',  data:ownerHold, backgroundColor:'#DDD6FE', borderRadius:3},
+      ]},
+      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+        scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:10}}},
+                y:{stacked:true,grid:{color:'rgba(0,0,0,0.04)'},ticks:{stepSize:2,font:{size:10}}}}}
+    });
+  } else {
+    ownerChart.data.datasets[0].data = ownerOpen;
+    ownerChart.data.datasets[1].data = ownerIP;
+    ownerChart.data.datasets[2].data = ownerHold;
+    ownerChart.update();
+  }
+
+  // Theme chart (pain points only)
+  const ppItems = MASTER_DATA.filter(x => x.type==='pain_point');
+  const themes = ['People','Process','Comm.','Data','Systems','Planning'];
+  const themeKeys = ['People','Process','Communication','Data','Systems','Planning'];
+  const themeTotal    = themeKeys.map(th => ppItems.filter(p=>p.theme===th).length);
+  const themeResolved = themeKeys.map(th => ppItems.filter(p=>p.theme===th&&STATE[p.id]==='Resolved').length);
+  const themeIP       = themeKeys.map(th => ppItems.filter(p=>p.theme===th&&STATE[p.id]==='In Progress').length);
+  if (!themeChart) {
+    themeChart = new Chart(document.getElementById('theme-chart'), {
+      type:'bar',
+      data:{labels:themes, datasets:[
+        {label:'Resolved',   data:themeResolved, backgroundColor:'#86EFAC', borderRadius:3},
+        {label:'In Progress',data:themeIP,       backgroundColor:'#FDE68A', borderRadius:3},
+        {label:'Open',       data:themeKeys.map((_,i)=>themeTotal[i]-themeResolved[i]-themeIP[i]), backgroundColor:'#BFDBFE', borderRadius:3},
+      ]},
+      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+        scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:10}}},
+                y:{stacked:true,grid:{color:'rgba(0,0,0,0.04)'},ticks:{stepSize:2,font:{size:10}}}}}
+    });
+  } else {
+    themeChart.data.datasets[0].data = themeResolved;
+    themeChart.data.datasets[1].data = themeIP;
+    themeChart.data.datasets[2].data = themeKeys.map((_,i)=>themeTotal[i]-themeResolved[i]-themeIP[i]);
+    themeChart.update();
+  }
+
+  // Priority chart by phase
+  const phKeys = ['30','60','90'];
+  const phLabels = ['Days 0–30','Days 31–60','Days 61–90'];
+  const prioGroups = ['High','Med','Low'];
+  const prioDatasets = prioGroups.map(pr => ({
+    label: pr,
+    data: phKeys.map(ph => {
+      const sub = taskItems.filter(t=>t.phase===ph&&t.priority===pr);
+      return sub.length ? pct(sub.filter(t=>STATE[t.id]==='Resolved').length, sub.length) : 0;
+    }),
+    backgroundColor: pr==='High'?'#FCA5A5':pr==='Med'?'#FDE68A':'#BBF7D0',
+    borderRadius: 3,
+  }));
+  if (!priorityChart) {
+    priorityChart = new Chart(document.getElementById('priority-chart'), {
+      type:'bar',
+      data:{labels:phLabels, datasets:prioDatasets},
+      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+        scales:{x:{grid:{display:false},ticks:{font:{size:10}}},
+                y:{max:100,grid:{color:'rgba(0,0,0,0.04)'},ticks:{callback:v=>v+'%',font:{size:10}}}}}
+    });
+  } else {
+    priorityChart.data.datasets.forEach((ds,i) => ds.data = prioDatasets[i].data);
+    priorityChart.update();
+  }
+
+  // Activity feed
+  const actCountEl = document.getElementById('act-count');
+  if (actCountEl) actCountEl.textContent = actLog.length + ' events';
+  const actFeedEl = document.getElementById('activity-feed-dash');
+  if (actFeedEl) actFeedEl.innerHTML = actLog.slice(0,8).map(a => `
+    <div class="trk-activity-item">
+      <div class="trk-act-dot" style="background:${a.col}"></div>
+      <div>
+        <div class="trk-act-text">${a.text}</div>
+        <div class="trk-act-time">${a.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   KANBAN — drag & drop enabled
+═══════════════════════════════════════════════════════════════ */
+let dragItem = null;
+
+function renderKanban() {
+  const view   = document.getElementById('kb-view')?.value || 'all';
+  const ownerF = document.getElementById('kb-owner')?.value || '';
+  const phaseF = document.getElementById('kb-phase')?.value || '';
+  const prioF  = document.getElementById('kb-priority')?.value || '';
+
+  // Always read from MASTER_DATA (includes tasks + pain points)
+  // and always read fresh status from STATE (not cached in item objects)
+  const allItems   = MASTER_DATA.length;
+  const taskCount  = MASTER_DATA.filter(x => x.type === 'task').length;
+  const ppCount    = MASTER_DATA.filter(x => x.type === 'pain_point').length;
+  console.log(`[KANBAN] MASTER_DATA total=${allItems} (tasks=${taskCount}, pain_points=${ppCount})`);
+  console.log('KANBAN DATA:', STATE);
+
+  let items = MASTER_DATA.filter(item => {
+    if (view==='tasks' && item.type!=='task') return false;
+    if (view==='pp'    && item.type!=='pain_point') return false;
+    if (ownerF && item.owner !== ownerF) return false;
+    if (phaseF && item.phase !== phaseF) return false;
+    if (prioF  && item.priority !== prioF) return false;
+    return true;
+  }).map(item => ({...item, status: STATE[item.id] || 'Open'}));
+
+  console.log(`[KANBAN] renderKanban: view="${view}" items=${items.length}, statuses:`, items.map(x=>`${x.id}=${x.status}`).join(', '));
+
+  const cols = {Open:[], 'In Progress':[], Resolved:[], 'On Hold':[]};
+  items.forEach(x => { if (cols[x.status]) cols[x.status].push(x); });
+
+  const colMap = {Open:'open','In Progress':'ip',Resolved:'done','On Hold':'hold'};
+  Object.keys(cols).forEach(s => {
+    const cid = colMap[s];
+    const list = cols[s];
+    const countEl = document.getElementById('kbc-'+cid);
+    if (countEl) countEl.textContent = list.length;
+    const listEl = document.getElementById('kbl-'+cid);
+    if (!listEl) return;
+    if (!list.length) { listEl.innerHTML = '<div class="trk-kb-empty">Drop items here</div>'; return; }
+    listEl.innerHTML = list.map(x => {
+      const typeTag = x.type==='task'
+        ? `<span style="font-size:8px;padding:1px 4px;border-radius:2px;background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;font-family:var(--mono);font-weight:700">T</span>`
+        : `<span style="font-size:8px;padding:1px 4px;border-radius:2px;background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;font-family:var(--mono);font-weight:700">PP</span>`;
+      return `<div class="trk-kb-card" draggable="true"
+          data-item-id="${x.id}" data-item-type="${x.type}"
+          ondragstart="kbDragStart(event)"
+          ondragend="kbDragEnd(event)">
+        <div class="trk-kb-card-id">
+          ${typeTag} ${x.id}
+          ${x.phase ? `<span class="ptag ptag-${x.phase}" style="font-size:8.5px">${PHASE_LABEL[x.phase]}</span>` : ''}
+          ${x.theme ? `<span class="theme-chip ${THEME_CLASS[x.theme]}" style="font-size:8.5px">${x.theme}</span>` : ''}
+        </div>
+        <div class="trk-kb-card-title">${x.title}</div>
+        <div class="trk-kb-card-meta">
+          <span class="trk-kb-owner">${x.owner}</span>
+          <span class="pri-${x.priority.toLowerCase()}">${x.priority}</span>
+        </div>
+      </div>`;
+    }).join('');
+  });
+
+  // Wire up drop zones
+  document.querySelectorAll('.trk-kb-col').forEach(col => {
+    col.ondragover = e => { e.preventDefault(); col.style.outline = '2px dashed #60A5FA'; };
+    col.ondragleave = () => { col.style.outline = ''; };
+    col.ondrop = e => {
+      e.preventDefault();
+      col.style.outline = '';
+      const id   = e.dataTransfer.getData('itemId');
+      const newStatus = e.dataTransfer.getData('targetStatus') || col.dataset.status;
+      if (!id || !newStatus) return;
+      console.log(`[KANBAN] drag-drop: ${id} → ${newStatus}`);
+      updateItemStatus(id, newStatus, null);
+      renderKanban();
+    };
+  });
+}
+
+function kbDragStart(e) {
+  const card = e.currentTarget;
+  dragItem = card;
+  e.dataTransfer.setData('itemId',   card.dataset.itemId);
+  e.dataTransfer.setData('itemType', card.dataset.itemType);
+  // Determine target column from drop, not here
+  setTimeout(() => card.style.opacity = '0.4', 0);
+}
+function kbDragEnd(e) {
+  if (dragItem) dragItem.style.opacity = '';
+  dragItem = null;
+}
+
+// Assign status to each kanban column container + boot rendering
+document.addEventListener('DOMContentLoaded', () => {
+  const colStatusMap = {
+    'kbl-open':  'Open',
+    'kbl-ip':    'In Progress',
+    'kbl-done':  'Resolved',
+    'kbl-hold':  'On Hold',
+  };
+  Object.entries(colStatusMap).forEach(([id, status]) => {
+    const col = document.getElementById(id)?.closest('.trk-kb-col');
+    if (col) col.dataset.status = status;
+  });
+
+  // Inject status dropdowns into Plan tab static items (Q1–Q10, F1–F10, S1–S8)
+  injectStatusDropdownsIntoPlanPanel();
+
+  // Inject status dropdowns into PP panel static items (PP1–PP30)
+  injectStatusDropdownsIntoPPPanel();
+
+  // Render dynamic (custom) items into plan + PP card panels
+  renderCustomTasksIntoPlan();
+  renderCustomPPsIntoCards();
+
+  console.log('[INIT] All panels initialised. STATE:', JSON.stringify(STATE).slice(0,200)+'…');
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   PLAN TAB — INJECT STATUS DROPDOWNS ON STATIC ITEMS (Q1–Q10, F1–F10, S1–S8)
+   Called on init and after every status change so dropdowns always
+   reflect current STATE. Idempotent: skips items that already have
+   a dropdown, then refreshes their value+style.
+═══════════════════════════════════════════════════════════════ */
+function injectStatusDropdownsIntoPlanPanel() {
+  const panel = document.getElementById('panel-plan');
+  if (!panel) return;
+
+  panel.querySelectorAll('.plan-item[data-plan-id]').forEach(item => {
+    const id = item.getAttribute('data-plan-id');
+    const s = STATE[id] || 'Open';
+    const st = STATUS_STYLE[s];
+    // Update existing dropdown value + style (don't recreate — avoids focus loss)
+    const existing = item.querySelector('.plan-status-sel');
+    if (existing) {
+      existing.value = s;
+      existing.style.background = st.bg;
+      existing.style.color = st.color;
+    }
+  });
+
+  // Also handle items that don't yet have data-plan-id set (static HTML items)
+  panel.querySelectorAll('.plan-item').forEach(item => {
+    const idEl = item.querySelector('.plan-item-id');
+    if (!idEl) return;
+    const id = idEl.textContent.trim();
+    if (!/^[QFS]\d+$/.test(id)) return;
+
+    // Tag the element with its task ID for future lookups
+    if (!item.hasAttribute('data-plan-id')) {
+      item.setAttribute('data-plan-id', id);
+    }
+
+    // Skip if already has a status row
+    if (item.querySelector('.plan-item-status-row')) return;
+
+    const s = STATE[id] || 'Open';
+    const st = STATUS_STYLE[s];
+
+    const row = document.createElement('div');
+    row.className = 'plan-item-status-row';
+    row.style.cssText = 'display:flex;align-items:center;gap:7px;margin-top:7px;padding-top:7px;border-top:1px solid var(--line2)';
+
+    const lbl = document.createElement('span');
+    lbl.style.cssText = 'font-size:10px;color:var(--ink3);font-weight:700;text-transform:uppercase;letter-spacing:0.5px';
+    lbl.textContent = 'Status';
+
+    const sel = document.createElement('select');
+    sel.className = 'plan-status-sel';
+    sel.style.cssText = `font-size:10.5px;font-family:var(--font);font-weight:600;border:1px solid var(--line);border-radius:5px;padding:2px 8px;cursor:pointer;background:${st.bg};color:${st.color}`;
+    sel.innerHTML = STATUSES.map(sv => `<option value="${sv}"${sv===s?' selected':''}>${sv}</option>`).join('');
+    sel.addEventListener('change', function() {
+      console.log(`[PLAN] status change: ${id} → ${this.value}`);
+      updateItemStatus(id, this.value, this);
+    });
+
+    row.appendChild(lbl);
+    row.appendChild(sel);
+    item.appendChild(row);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER CUSTOM TASKS INTO 30/60/90 PLAN COLUMNS
+═══════════════════════════════════════════════════════════════ */
+function renderCustomTasksIntoPlan() {
+  // Clear previously injected dynamic items (re-render safe)
+  document.querySelectorAll('.plan-item-dynamic').forEach(el => el.remove());
+
+  const customTasks = MASTER_DATA.filter(x => x.type === 'task' && x.isCustom);
+  customTasks.forEach(task => {
+    const containerId = task.phase === '30' ? 'plan-items-q'
+                      : task.phase === '60' ? 'plan-items-f'
+                      : 'plan-items-s';
+    const cls = task.phase === '30' ? 'q-item' : task.phase === '60' ? 'f-item' : 's-item';
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const s = STATE[task.id] || 'Open';
+    const st = STATUS_STYLE[s];
+    const el = document.createElement('div');
+    el.className = `plan-item ${cls} plan-item-dynamic`;
+    el.setAttribute('data-plan-id', task.id);
+    el.innerHTML = `
+      <div class="plan-item-id">${task.id}</div>
+      <div class="plan-item-title">${task.title}</div>
+      <div class="plan-item-owner">Owner: ${task.owner}${task.priority ? ' · ' + task.priority : ''}</div>
+      ${task.measure ? `<div class="plan-item-metric">${task.measure}</div>` : ''}
+      <div class="plan-item-status-row" style="display:flex;align-items:center;gap:7px;margin-top:7px;padding-top:7px;border-top:1px solid var(--line2)">
+        <span style="font-size:10px;color:var(--ink3);font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Status</span>
+        <select class="plan-status-sel" style="font-size:10.5px;font-family:var(--font);font-weight:600;border:1px solid var(--line);border-radius:5px;padding:2px 8px;cursor:pointer;background:${st.bg};color:${st.color}"
+          onchange="updateItemStatus('${task.id}', this.value, this)">
+          ${STATUSES.map(sv => `<option value="${sv}"${sv===s?' selected':''}>${sv}</option>`).join('')}
+        </select>
+      </div>`;
+    container.appendChild(el);
+  });
+}
+
+/* changePlanItemStatus and changePPCardStatus are unified aliases
+   defined above in the updateItemStatus block */
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER CUSTOM PAIN POINTS INTO CATEGORY CARDS
+   Also render status dropdowns on ALL existing PPs in the card panel
+═══════════════════════════════════════════════════════════════ */
+const THEME_TO_DYNAMIC_ID = {
+  'People':        'pp-dynamic-People',
+  'Process':       'pp-dynamic-Process',
+  'Communication': 'pp-dynamic-Communication',
+  'Data':          'pp-dynamic-Data',
+  'Systems':       'pp-dynamic-Systems',
+  'Planning':      'pp-dynamic-Planning',
+};
+
+function renderCustomPPsIntoCards() {
+  // Clear dynamic containers
+  Object.values(THEME_TO_DYNAMIC_ID).forEach(cid => {
+    const el = document.getElementById(cid);
+    if (el) el.innerHTML = '';
+  });
+
+  const customPPs = MASTER_DATA.filter(x => x.type === 'pain_point' && x.isCustom);
+  customPPs.forEach(pp => {
+    const themeKey = pp.theme || 'Planning';
+    const containerId = THEME_TO_DYNAMIC_ID[themeKey];
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const s = STATE[pp.id] || 'Open';
+    const st = STATUS_STYLE[s];
+    const el = document.createElement('div');
+    el.className = 'pp-dynamic-item';
+    el.setAttribute('data-pp-id', pp.id);
+    el.innerHTML = `
+      <div style="flex:1">
+        <span class="pp-dynamic-item-id">${pp.id}</span>
+        <span class="pp-dynamic-item-text"> — ${pp.title}</span>
+        ${pp.measure ? `<div style="font-size:10px;color:var(--ink3);margin-top:3px;font-style:italic">${pp.measure}</div>` : ''}
+        <div style="margin-top:5px;display:flex;align-items:center;gap:6px">
+          <span style="font-size:10px;color:var(--ink3);font-weight:600">Status:</span>
+          <select class="pp-status-sel" style="background:${st.bg};color:${st.color}"
+            onchange="updateItemStatus('${pp.id}', this.value, this)">
+            ${STATUSES.map(sv => `<option value="${sv}"${sv===s?' selected':''}>${sv}</option>`).join('')}
+          </select>
+          <span style="font-size:10px;color:var(--ink3)">· ${pp.owner || ''}</span>
+        </div>
+      </div>`;
+    container.appendChild(el);
+  });
+}
+
+/* changePPCardStatus is a unified alias defined above */
+
+/* ═══════════════════════════════════════════════════════════════
+   ADD STATUS DROPDOWNS TO EXISTING (non-custom) PP ITEMS in panel-pp
+   Converts static <p> entries to interactive rows with live dropdowns.
+   Idempotent: updates existing dropdowns' value+style, adds new ones.
+═══════════════════════════════════════════════════════════════ */
+function injectStatusDropdownsIntoPPPanel() {
+  const panel = document.getElementById('panel-pp');
+  if (!panel) return;
+
+  panel.querySelectorAll('.pp-card-body > p').forEach(p => {
+    const bEl = p.querySelector('b');
+    if (!bEl) return;
+    const idText = bEl.textContent.trim();
+    if (!/^PP\d+$/.test(idText)) return;
+    const ppId = idText;
+    const s = STATE[ppId] || 'Open';
+    const st = STATUS_STYLE[s];
+
+    const existing = p.querySelector('.pp-status-sel');
+    if (existing) {
+      // Refresh value + style without recreating (avoids event-listener duplication)
+      existing.value = s;
+      existing.style.background = st.bg;
+      existing.style.color = st.color;
+      return;
+    }
+
+    // First time: create and attach the select
+    const sel = document.createElement('select');
+    sel.className = 'pp-status-sel';
+    sel.style.background = st.bg;
+    sel.style.color = st.color;
+    sel.style.marginLeft = '8px';
+    sel.innerHTML = STATUSES.map(sv => `<option value="${sv}"${sv===s?' selected':''}>${sv}</option>`).join('');
+    sel.addEventListener('change', function() {
+      console.log(`[PP] status change: ${ppId} → ${this.value}`);
+      updateItemStatus(ppId, this.value, this);
+    });
+    p.appendChild(sel);
+  });
+}
+
+/* PP dropdown injection is called from the main DOMContentLoaded block above */
+
+/* ═══════════════════════════════════════════════════════════════
+   CLOCK
+═══════════════════════════════════════════════════════════════ */
+function updateClock() {
+  const n = new Date();
+  const el = document.getElementById('trk-clock');
+  if (el) el.textContent = 'Live · '+n.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})+' '+n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   TAB NAVIGATION
+═══════════════════════════════════════════════════════════════ */
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (id === 'tracker-dash')   renderDashboard();
+  if (id === 'tracker-master') renderMasterTable();
+  if (id === 'tracker-kanban') renderKanban();
+  if (id === 'plan') {
+    injectStatusDropdownsIntoPlanPanel();   // refresh static item dropdowns
+    renderCustomTasksIntoPlan();            // render user-created tasks
+  }
+  if (id === 'pp') {
+    renderCustomPPsIntoCards();
+    injectStatusDropdownsIntoPPPanel();
+  }
+}
+
+populateOwners();
+updateClock();
+setInterval(updateClock, 60000);
+</script>
+<!-- ══════════════════════════════════════════════════
+     CREATE ITEM MODAL
+═══════════════════════════════════════════════════ -->
+<div class="ci-overlay" id="ci-overlay" onclick="ciOverlayClick(event)">
+  <div class="ci-modal" role="dialog" aria-modal="true" aria-labelledby="ci-modal-title">
+
+    <!-- Header -->
+    <div class="ci-header">
+      <div class="ci-header-left">
+        <div>
+          <h2 id="ci-modal-title">Create New Item</h2>
+          <div class="ci-subtitle">Add a Task or Pain Point to the unified tracker</div>
+        </div>
+      </div>
+      <button class="ci-close" onclick="closeCreateModal()" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Body -->
+    <div class="ci-body">
+
+      <!-- TYPE TOGGLE -->
+      <div class="ci-type-toggle" id="ci-type-toggle">
+        <button class="ci-type-btn active-task" id="ci-type-task" onclick="ciSetType('task')">
+          <span class="ci-type-icon">✅</span>
+          <span class="ci-type-label">Initiative / Task</span>
+          <span class="ci-type-desc">30/60/90-day action item · gets a phase</span>
+        </button>
+        <button class="ci-type-btn" id="ci-type-pp" onclick="ciSetType('pain_point')">
+          <span class="ci-type-icon">🔴</span>
+          <span class="ci-type-label">Pain Point</span>
+          <span class="ci-type-desc">Problem statement · gets a theme</span>
+        </button>
+      </div>
+
+      <!-- FORM GRID -->
+      <div class="ci-form-grid">
+
+        <!-- Auto ID -->
+        <div class="ci-field">
+          <label class="ci-label">Auto-generated ID</label>
+          <div class="ci-id-preview task-id" id="ci-id-preview">T—</div>
+        </div>
+
+        <!-- Status -->
+        <div class="ci-field">
+          <label class="ci-label" for="ci-status">Status</label>
+          <select class="ci-select" id="ci-status">
+            <option value="Open" selected>Open</option>
+            <option value="In Progress">In Progress</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Resolved">Resolved</option>
+          </select>
+        </div>
+
+        <!-- Title — full width -->
+        <div class="ci-field ci-form-full">
+          <label class="ci-label" for="ci-title">Title / Description <span class="ci-req">*</span></label>
+          <textarea class="ci-textarea" id="ci-title" placeholder="Describe the task or pain point clearly…" rows="2"></textarea>
+          <span class="ci-err-msg" id="ci-err-title">Title is required.</span>
+        </div>
+
+        <!-- Owner -->
+        <div class="ci-field">
+          <label class="ci-label" for="ci-owner">Owner <span class="ci-req">*</span></label>
+          <input class="ci-input" id="ci-owner" list="ci-owner-list" placeholder="Type or select owner…" autocomplete="off">
+          <datalist id="ci-owner-list"></datalist>
+          <span class="ci-err-msg" id="ci-err-owner">Owner is required.</span>
+        </div>
+
+        <!-- Priority -->
+        <div class="ci-field">
+          <label class="ci-label" for="ci-priority">Priority</label>
+          <select class="ci-select" id="ci-priority">
+            <option value="High">High</option>
+            <option value="Med" selected>Med</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+
+        <!-- Phase (task only) -->
+        <div class="ci-field" id="ci-field-phase">
+          <label class="ci-label" for="ci-phase">Phase <span class="ci-req">*</span></label>
+          <select class="ci-select" id="ci-phase" onchange="ciUpdateIdPreview()">
+            <option value="">— select —</option>
+            <option value="30">Days 0–30 (Quick Wins)</option>
+            <option value="60">Days 31–60 (Foundation)</option>
+            <option value="90">Days 61–90 (Scale)</option>
+          </select>
+          <span class="ci-err-msg" id="ci-err-phase">Phase is required for Tasks.</span>
+        </div>
+
+        <!-- Theme (pain point only) -->
+        <div class="ci-field" id="ci-field-theme" style="display:none">
+          <label class="ci-label" for="ci-theme">Theme</label>
+          <select class="ci-select" id="ci-theme">
+            <option value="">— select —</option>
+            <option value="People">People</option>
+            <option value="Process">Process</option>
+            <option value="Communication">Communication</option>
+            <option value="Data">Data</option>
+            <option value="Systems">Systems</option>
+            <option value="Planning">Planning</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- ADVANCED (optional) -->
+      <div class="ci-adv-toggle" onclick="ciToggleAdv()">
+        <span class="ci-adv-arrow" id="ci-adv-arrow">▶</span>
+        Advanced options
+      </div>
+      <div class="ci-adv-body" id="ci-adv-body">
+        <div class="ci-form-grid" style="margin-top:0">
+          <div class="ci-field">
+            <label class="ci-label" for="ci-measure">Success Measure / Solution</label>
+            <input class="ci-input" id="ci-measure" placeholder="How will we know it's done?">
+          </div>
+          <div class="ci-field">
+            <label class="ci-label" for="ci-qw">Quick Win?</label>
+            <select class="ci-select" id="ci-qw">
+              <option value="no" selected>No</option>
+              <option value="yes">Yes — flag as Quick Win</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /ci-body -->
+
+    <!-- Footer -->
+    <div class="ci-footer">
+      <div class="ci-footer-left" id="ci-footer-stamp"></div>
+      <div class="ci-footer-right">
+        <button class="ci-btn ci-btn-cancel" onclick="closeCreateModal()">Cancel</button>
+        <button class="ci-btn ci-btn-create" id="ci-submit-btn" onclick="ciSubmit()">
+          <span>＋</span> Create Item
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /ci-modal -->
+</div><!-- /ci-overlay -->
+
+<!-- Toast -->
+<div class="ci-toast" id="ci-toast">
+  <span class="ci-toast-icon">✅</span>
+  <span id="ci-toast-msg">Item created successfully</span>
+</div>
+
+<!-- Edit Modal (reuses same overlay structure) -->
+<div class="ci-overlay" id="ci-edit-overlay" onclick="ciEditOverlayClick(event)">
+  <div class="ci-modal" role="dialog" aria-modal="true" aria-labelledby="ci-edit-title">
+    <div class="ci-header">
+      <div class="ci-header-left">
+        <div>
+          <h2 id="ci-edit-title">Edit Item</h2>
+          <div class="ci-subtitle" id="ci-edit-subtitle">Editing — </div>
+        </div>
+      </div>
+      <button class="ci-close" onclick="closeEditModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="ci-body">
+      <div class="ci-form-grid">
+        <div class="ci-field ci-form-full">
+          <label class="ci-label" for="ci-edit-title-inp">Title / Description <span class="ci-req">*</span></label>
+          <textarea class="ci-textarea" id="ci-edit-title-inp" rows="2"></textarea>
+          <span class="ci-err-msg" id="ci-edit-err-title">Title is required.</span>
+        </div>
+        <div class="ci-field">
+          <label class="ci-label" for="ci-edit-owner">Owner <span class="ci-req">*</span></label>
+          <input class="ci-input" id="ci-edit-owner" list="ci-edit-owner-list" autocomplete="off">
+          <datalist id="ci-edit-owner-list"></datalist>
+          <span class="ci-err-msg" id="ci-edit-err-owner">Owner is required.</span>
+        </div>
+        <div class="ci-field">
+          <label class="ci-label" for="ci-edit-priority">Priority</label>
+          <select class="ci-select" id="ci-edit-priority">
+            <option value="High">High</option>
+            <option value="Med">Med</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div class="ci-field" id="ci-edit-field-phase">
+          <label class="ci-label" for="ci-edit-phase">Phase</label>
+          <select class="ci-select" id="ci-edit-phase">
+            <option value="">—</option>
+            <option value="30">Days 0–30</option>
+            <option value="60">Days 31–60</option>
+            <option value="90">Days 61–90</option>
+          </select>
+        </div>
+        <div class="ci-field" id="ci-edit-field-theme">
+          <label class="ci-label" for="ci-edit-theme">Theme</label>
+          <select class="ci-select" id="ci-edit-theme">
+            <option value="">—</option>
+            <option value="People">People</option>
+            <option value="Process">Process</option>
+            <option value="Communication">Communication</option>
+            <option value="Data">Data</option>
+            <option value="Systems">Systems</option>
+            <option value="Planning">Planning</option>
+          </select>
+        </div>
+        <div class="ci-field">
+          <label class="ci-label" for="ci-edit-measure">Success Measure</label>
+          <input class="ci-input" id="ci-edit-measure">
+        </div>
+      </div>
+    </div>
+    <div class="ci-footer">
+      <div class="ci-footer-left" id="ci-edit-footer-stamp"></div>
+      <div class="ci-footer-right">
+        <button class="ci-btn ci-btn-cancel" onclick="closeEditModal()">Cancel</button>
+        <button class="ci-btn ci-btn-create" onclick="ciSaveEdit()">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CREATE ITEM — FULL FEATURE ENGINE
+═══════════════════════════════════════════════════════════════ */
+
+/* ── CUSTOM ITEMS PERSISTENCE KEY ── */
+const CI_KEY = 'mediassist_custom_items_v1';
+
+function loadCustomItems() {
+  try { return JSON.parse(localStorage.getItem(CI_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveCustomItems() {
+  try { localStorage.setItem(CI_KEY, JSON.stringify(CUSTOM_ITEMS)); } catch(e) {}
+}
+
+/* ── Load saved custom items and push into MASTER_DATA at boot ── */
+const CUSTOM_ITEMS = loadCustomItems();
+CUSTOM_ITEMS.forEach(item => {
+  if (!MASTER_DATA.find(x => x.id === item.id)) {
+    MASTER_DATA.push(item);
+    if (!(item.id in STATE)) STATE[item.id] = item.status || 'Open';
+  }
+});
+
+/* ── ID GENERATION ── */
+/* Tasks: phase 30→Q#, phase 60→F#, phase 90→S#  |  Pain Points: PP# */
+function generateId(type, phase) {
+  if (type === 'task') {
+    const prefix = phase === '30' ? 'Q' : phase === '60' ? 'F' : 'S';
+    const existing = MASTER_DATA
+      .filter(x => x.type === 'task' && x.id.startsWith(prefix) && /^\d+$/.test(x.id.slice(prefix.length)))
+      .map(x => parseInt(x.id.slice(prefix.length)));
+    const max = existing.length ? Math.max(...existing) : 0;
+    return prefix + (max + 1);
+  } else {
+    const existing = MASTER_DATA
+      .filter(x => x.type === 'pain_point' && /^PP\d+$/.test(x.id))
+      .map(x => parseInt(x.id.slice(2)));
+    const max = existing.length ? Math.max(...existing) : 0;
+    return 'PP' + (max + 1);
+  }
+}
+
+/* ── CURRENT TYPE STATE ── */
+let ciCurrentType = 'task';
+let ciEditId = null;
+
+/* ── OPEN / CLOSE ── */
+function openCreateModal() {
+  ciCurrentType = 'task';
+  ciReset();
+  ciUpdateIdPreview();
+  ciPopulateOwnerDatalist('ci-owner-list');
+  document.getElementById('ci-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('ci-title').focus(), 180);
+}
+function closeCreateModal() {
+  document.getElementById('ci-overlay').classList.remove('open');
+  ciReset();
+}
+function ciOverlayClick(e) {
+  if (e.target === document.getElementById('ci-overlay')) closeCreateModal();
+}
+
+/* ── TYPE SWITCHING ── */
+function ciSetType(type) {
+  ciCurrentType = type;
+  document.getElementById('ci-type-task').className = 'ci-type-btn' + (type==='task' ? ' active-task' : '');
+  document.getElementById('ci-type-pp').className   = 'ci-type-btn' + (type==='pain_point' ? ' active-pp' : '');
+  document.getElementById('ci-field-phase').style.display  = type==='task'        ? '' : 'none';
+  document.getElementById('ci-field-theme').style.display  = type==='pain_point'  ? '' : 'none';
+  ciUpdateIdPreview();
+  // Clear phase error if switching away from task
+  if (type !== 'task') {
+    document.getElementById('ci-phase').classList.remove('err');
+    document.getElementById('ci-err-phase').classList.remove('show');
+  }
+}
+
+function ciUpdateIdPreview() {
+  const preview = document.getElementById('ci-id-preview');
+  const phase = ciCurrentType === 'task' ? (document.getElementById('ci-phase')?.value || '30') : null;
+  const id = generateId(ciCurrentType, phase);
+  preview.textContent = id;
+  preview.className = 'ci-id-preview ' + (ciCurrentType === 'task' ? 'task-id' : 'pp-id');
+}
+
+/* ── OWNER DATALIST ── */
+function ciPopulateOwnerDatalist(datalistId) {
+  const owners = [...new Set(MASTER_DATA.map(x => x.owner))].sort();
+  const dl = document.getElementById(datalistId);
+  if (dl) dl.innerHTML = owners.map(o => `<option value="${o}">`).join('');
+}
+
+/* ── ADVANCED TOGGLE ── */
+function ciToggleAdv() {
+  const body  = document.getElementById('ci-adv-body');
+  const arrow = document.getElementById('ci-adv-arrow');
+  const open  = body.classList.toggle('open');
+  arrow.classList.toggle('open', open);
+}
+
+/* ── RESET ── */
+function ciReset() {
+  ['ci-title','ci-owner','ci-measure'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.classList.remove('err'); }
+  });
+  ['ci-phase','ci-theme','ci-status','ci-priority','ci-qw'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.selectedIndex = id === 'ci-priority' ? 1 : 0; el.classList.remove('err'); }
+  });
+  document.querySelectorAll('.ci-err-msg').forEach(el => el.classList.remove('show'));
+  document.getElementById('ci-footer-stamp').textContent = '';
+  document.getElementById('ci-adv-body').classList.remove('open');
+  document.getElementById('ci-adv-arrow').classList.remove('open');
+  ciSetType('task');
+}
+
+/* ── VALIDATION ── */
+function ciValidate() {
+  let ok = true;
+  const title = document.getElementById('ci-title').value.trim();
+  const owner = document.getElementById('ci-owner').value.trim();
+  const phase = document.getElementById('ci-phase').value;
+
+  if (!title) {
+    document.getElementById('ci-title').classList.add('err');
+    document.getElementById('ci-err-title').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('ci-title').classList.remove('err');
+    document.getElementById('ci-err-title').classList.remove('show');
+  }
+  if (!owner) {
+    document.getElementById('ci-owner').classList.add('err');
+    document.getElementById('ci-err-owner').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('ci-owner').classList.remove('err');
+    document.getElementById('ci-err-owner').classList.remove('show');
+  }
+  if (ciCurrentType === 'task' && !phase) {
+    document.getElementById('ci-phase').classList.add('err');
+    document.getElementById('ci-err-phase').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('ci-phase').classList.remove('err');
+    document.getElementById('ci-err-phase').classList.remove('show');
+  }
+  return ok;
+}
+
+/* ── SUBMIT — CREATE ── */
+function ciSubmit() {
+  if (!ciValidate()) return;
+
+  const btn = document.getElementById('ci-submit-btn');
+  btn.classList.add('loading');
+
+  const id       = generateId(ciCurrentType, ciCurrentType === 'task' ? document.getElementById('ci-phase').value : null);
+  const title    = document.getElementById('ci-title').value.trim();
+  const owner    = document.getElementById('ci-owner').value.trim();
+  const status   = document.getElementById('ci-status').value;
+  const priority = document.getElementById('ci-priority').value;
+  const phase    = ciCurrentType === 'task'       ? document.getElementById('ci-phase').value  : null;
+  const theme    = ciCurrentType === 'pain_point' ? document.getElementById('ci-theme').value  : null;
+  const measure  = document.getElementById('ci-measure').value.trim();
+  const qw       = document.getElementById('ci-qw').value === 'yes';
+  const now      = new Date();
+
+  const newItem = {
+    id, title, owner, status, priority,
+    phase:   phase  || null,
+    theme:   theme  || null,
+    measure: measure || '',
+    qw,
+    type: ciCurrentType,
+    createdAt: now.toISOString(),
+    isCustom: true,
+  };
+
+  // Push into MASTER_DATA (single source of truth)
+  MASTER_DATA.push(newItem);
+
+  // Persist status + custom item
+  // IMPORTANT: STATE[id] must be set BEFORE updateAllDerivedUI() is called
+  // so renderKanban() immediately places the new item in the correct column.
+  STATE[id] = status;
+  saveState(STATE);
+  CUSTOM_ITEMS.push(newItem);
+  saveCustomItems();
+
+  // Activity log
+  const ts = now.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  const typeLabel = ciCurrentType === 'task' ? 'Task' : 'Pain Point';
+  actLog.unshift({
+    text: `<strong>${id}</strong> — new ${typeLabel} created by <em>${owner}</em>`,
+    time: 'Just now, ' + ts,
+    col: ciCurrentType === 'task' ? '#2563EB' : '#DC2626',
+  });
+  if (actLog.length > 15) actLog.pop();
+
+  // Repopulate owner dropdowns (new owner may have been entered)
+  populateOwners();
+
+  // Update all UI instantly
+  updateAllDerivedUI();
+
+  // Close + feedback
+  btn.classList.remove('loading');
+  closeCreateModal();
+  showToast(`✅ ${id} created and added to Master Tracker`);
+}
+
+/* ── TOAST ── */
+function showToast(msg) {
+  const toast = document.getElementById('ci-toast');
+  document.getElementById('ci-toast-msg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+/* ══════════════════════════════════════════════
+   EDIT MODAL
+══════════════════════════════════════════════ */
+function openEditModal(id) {
+  const item = MASTER_DATA.find(x => x.id === id);
+  if (!item) return;
+  ciEditId = id;
+
+  document.getElementById('ci-edit-subtitle').textContent = 'Editing — ' + id;
+  document.getElementById('ci-edit-title-inp').value = item.title || '';
+  document.getElementById('ci-edit-owner').value     = item.owner || '';
+  document.getElementById('ci-edit-priority').value  = item.priority || 'Med';
+  document.getElementById('ci-edit-measure').value   = item.measure || '';
+
+  // Phase / theme visibility
+  const isTask = item.type === 'task';
+  document.getElementById('ci-edit-field-phase').style.display = isTask ? '' : 'none';
+  document.getElementById('ci-edit-field-theme').style.display = isTask ? 'none' : '';
+  document.getElementById('ci-edit-phase').value = item.phase || '';
+  document.getElementById('ci-edit-theme').value = item.theme || '';
+
+  const created = item.createdAt ? new Date(item.createdAt).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Original data';
+  document.getElementById('ci-edit-footer-stamp').textContent = 'Created: ' + created;
+
+  ciPopulateOwnerDatalist('ci-edit-owner-list');
+  document.querySelectorAll('#ci-edit-overlay .ci-err-msg').forEach(el => el.classList.remove('show'));
+  document.querySelectorAll('#ci-edit-overlay .ci-input, #ci-edit-overlay .ci-select, #ci-edit-overlay .ci-textarea')
+    .forEach(el => el.classList.remove('err'));
+
+  document.getElementById('ci-edit-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('ci-edit-title-inp').focus(), 180);
+}
+
+function closeEditModal() {
+  document.getElementById('ci-edit-overlay').classList.remove('open');
+  ciEditId = null;
+}
+function ciEditOverlayClick(e) {
+  if (e.target === document.getElementById('ci-edit-overlay')) closeEditModal();
+}
+
+function ciSaveEdit() {
+  const title = document.getElementById('ci-edit-title-inp').value.trim();
+  const owner = document.getElementById('ci-edit-owner').value.trim();
+  let ok = true;
+  if (!title) {
+    document.getElementById('ci-edit-title-inp').classList.add('err');
+    document.getElementById('ci-edit-err-title').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('ci-edit-title-inp').classList.remove('err');
+    document.getElementById('ci-edit-err-title').classList.remove('show');
+  }
+  if (!owner) {
+    document.getElementById('ci-edit-owner').classList.add('err');
+    document.getElementById('ci-edit-err-owner').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('ci-edit-owner').classList.remove('err');
+    document.getElementById('ci-edit-err-owner').classList.remove('show');
+  }
+  if (!ok) return;
+
+  const item = MASTER_DATA.find(x => x.id === ciEditId);
+  if (!item) return;
+
+  item.title    = title;
+  item.owner    = owner;
+  item.priority = document.getElementById('ci-edit-priority').value;
+  item.measure  = document.getElementById('ci-edit-measure').value.trim();
+  if (item.type === 'task')        item.phase = document.getElementById('ci-edit-phase').value;
+  if (item.type === 'pain_point')  item.theme = document.getElementById('ci-edit-theme').value;
+  item.updatedAt = new Date().toISOString();
+
+  // Sync back to CUSTOM_ITEMS if it's a custom item
+  if (item.isCustom) {
+    const ci = CUSTOM_ITEMS.find(x => x.id === ciEditId);
+    if (ci) Object.assign(ci, item);
+    saveCustomItems();
+  }
+
+  const ts = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  actLog.unshift({text:`<strong>${ciEditId}</strong> edited`, time:'Just now, '+ts, col:'#7C3AED'});
+  if (actLog.length > 15) actLog.pop();
+
+  populateOwners();
+  updateAllDerivedUI();
+  closeEditModal();
+  showToast(`💾 ${ciEditId} updated`);
+}
+
+/* ══════════════════════════════════════════════
+   DELETE ITEM
+══════════════════════════════════════════════ */
+function deleteItem(id) {
+  const item = MASTER_DATA.find(x => x.id === id);
+  if (!item) return;
+  if (!confirm(`Delete "${item.title}"?\n\nThis cannot be undone.`)) return;
+
+  const idx = MASTER_DATA.findIndex(x => x.id === id);
+  if (idx > -1) MASTER_DATA.splice(idx, 1);
+  delete STATE[id];
+  saveState(STATE);
+
+  // Remove from custom items if custom
+  const ci = CUSTOM_ITEMS.findIndex(x => x.id === id);
+  if (ci > -1) CUSTOM_ITEMS.splice(ci, 1);
+  saveCustomItems();
+
+  const ts = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  actLog.unshift({text:`<strong>${id}</strong> deleted`, time:'Just now, '+ts, col:'#DC2626'});
+  if (actLog.length > 15) actLog.pop();
+
+  populateOwners();
+  updateAllDerivedUI();
+  showToast(`🗑 ${id} deleted`);
+}
+
+/* ══════════════════════════════════════════════
+   KEYBOARD SHORTCUT — Escape closes modals
+══════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeCreateModal();
+    closeEditModal();
+  }
+});
+</script>
+</div><!-- /.app-shell -->
+
+
+<script type="module">
+/* ══════════════════════════════════════════════════════════════
+   FIREBASE REAL-TIME ADDON
+   Patches the existing app to add cloud sync.
+   If Firebase fails, the app continues working with localStorage.
+══════════════════════════════════════════════════════════════ */
+import { initializeApp }                       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyByEZ0mH6RaJNn8QWiEmQGoXJi97CyMkXE",
+  authDomain:        "customer-onboarding-tracker.firebaseapp.com",
+  databaseURL:       "https://customer-onboarding-tracker-default-rtdb.firebaseio.com",
+  projectId:         "customer-onboarding-tracker",
+  storageBucket:     "customer-onboarding-tracker.firebasestorage.app",
+  messagingSenderId: "257988399081",
+  appId:             "1:257988399081:web:6013a95f189b9438898578"
+};
+
+try {
+  const fbApp = initializeApp(firebaseConfig);
+  const db    = getDatabase(fbApp);
+
+  /* ── User identity — stored in localStorage (permanent across sessions) ── */
+  let CURRENT_USER = localStorage.getItem('ob_username') || '';
+
+  /* ── Name modal styles ── */
+  const nameModalCSS = `
+    #ob-name-overlay {
+      position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:99999;
+      display:flex;align-items:center;justify-content:center;
+    }
+    #ob-name-box {
+      background:#fff;border-radius:12px;padding:32px 28px;width:340px;
+      box-shadow:0 8px 40px rgba(0,0,0,0.18);font-family:'IBM Plex Sans',sans-serif;
+    }
+    #ob-name-box h2 {font-size:16px;font-weight:700;color:#0C1F3F;margin-bottom:6px;}
+    #ob-name-box p  {font-size:12px;color:#6B7280;margin-bottom:18px;line-height:1.5;}
+    #ob-name-input  {
+      width:100%;border:1.5px solid #D1D5DB;border-radius:7px;
+      padding:10px 12px;font-size:14px;font-family:inherit;outline:none;
+      color:#111827;transition:border 0.15s;
+    }
+    #ob-name-input:focus {border-color:#0C447C;}
+    #ob-name-err   {font-size:11px;color:#B91C1C;margin-top:5px;display:none;}
+    #ob-name-save  {
+      margin-top:16px;width:100%;padding:10px;background:#0C447C;color:#fff;
+      border:none;border-radius:7px;font-size:14px;font-weight:600;
+      cursor:pointer;font-family:inherit;transition:background 0.15s;
+    }
+    #ob-name-save:hover {background:#1D4ED8;}
+    #ob-name-skip  {
+      margin-top:8px;width:100%;padding:6px;background:transparent;color:#6B7280;
+      border:none;font-size:12px;cursor:pointer;font-family:inherit;
+    }
+    #ob-name-skip:hover {color:#111827;}
+  `;
+
+  function showNameModal(isEdit) {
+    // Remove existing if any
+    const existing = document.getElementById('ob-name-overlay');
+    if (existing) existing.remove();
+
+    const style = document.createElement('style');
+    style.textContent = nameModalCSS;
+    document.head.appendChild(style);
+
+    const overlay = document.createElement('div');
+    overlay.id = 'ob-name-overlay';
+    overlay.innerHTML = `
+      <div id="ob-name-box">
+        <h2>👤 ${isEdit ? 'Change your name' : 'Welcome! Who are you?'}</h2>
+        <p>${isEdit
+          ? 'Update your display name. This appears in the activity log when you change task statuses.'
+          : 'Enter your name so your teammates can see who made each change in the activity log.'
+        }</p>
+        <input id="ob-name-input" type="text" placeholder="e.g. Priya Sharma"
+          value="${CURRENT_USER}" maxlength="40" autocomplete="off" spellcheck="false"/>
+        <div id="ob-name-err">Please enter your name (at least 2 characters).</div>
+        <button id="ob-name-save">${isEdit ? 'Save changes' : 'Start collaborating →'}</button>
+        ${isEdit ? '<button id="ob-name-skip">Cancel</button>' : ''}
+      </div>`;
+    document.body.appendChild(overlay);
+
+    const input = document.getElementById('ob-name-input');
+    const errEl = document.getElementById('ob-name-err');
+    input.focus();
+    input.select();
+
+    function doSave() {
+      const val = input.value.trim();
+      if (val.length < 2) { errEl.style.display = 'block'; input.focus(); return; }
+      CURRENT_USER = val;
+      localStorage.setItem('ob_username', val);
+      overlay.remove();
+      setBadge('🟢 Live sync active · ' + CURRENT_USER + ' <span id="fb-change-name" style="cursor:pointer;text-decoration:underline;opacity:0.7" title="Change name">✏️</span>', '#6EE7B7');
+      attachChangeName();
+    }
+
+    document.getElementById('ob-name-save').onclick = doSave;
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') doSave(); });
+    const skipBtn = document.getElementById('ob-name-skip');
+    if (skipBtn) skipBtn.onclick = () => overlay.remove();
+  }
+
+  function attachChangeName() {
+    const el = document.getElementById('fb-change-name');
+    if (el) el.onclick = () => showNameModal(true);
+  }
+
+  /* ── Show live badge in header ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    const meta = document.querySelector('.page-header .meta');
+    if (meta) {
+      const badge = document.createElement('div');
+      badge.id = 'fb-badge';
+      badge.innerHTML = '🟡 Connecting…';
+      badge.style.cssText = 'margin-top:5px;font-size:11px;color:#FCD34D;font-family:var(--mono);cursor:default';
+      meta.appendChild(badge);
+    }
+    // Show name modal if no name saved yet
+    if (!CURRENT_USER) {
+      showNameModal(false);
+    }
+  });
+
+  function setBadge(html, color) {
+    const b = document.getElementById('fb-badge');
+    if (b) { b.innerHTML = html; b.style.color = color; }
+  }
+
+  /* ── Patch saveState — write to Firebase instead of (well, in addition to) localStorage ── */
+  const _origSaveState = window.saveState || function(){};
+  window.saveState = function(statusMap) {
+    _origSaveState(statusMap);                          // keep localStorage working too
+    set(ref(db, 'state'), statusMap).catch(e => console.warn('[FB] saveState error', e));
+  };
+
+  /* ── Patch saveCustomItems ── */
+  const _origSaveCustom = window.saveCustomItems || function(){};
+  window.saveCustomItems = function() {
+    _origSaveCustom();
+    const keyed = {};
+    (window.CUSTOM_ITEMS || []).forEach(item => { keyed[item.id] = item; });
+    set(ref(db, 'custom_items'), keyed).catch(e => console.warn('[FB] saveCustomItems error', e));
+  };
+
+  /* ── Patch updateItemStatus — add username to activity log entry ── */
+  const _origUpdateStatus = window.updateItemStatus;
+  if (_origUpdateStatus) {
+    window.updateItemStatus = function(id, newStatus, triggerEl) {
+      _origUpdateStatus(id, newStatus, triggerEl);
+      // Overwrite the latest log entry with username included
+      const actLog = window.actLog;
+      if (actLog && actLog.length) {
+        actLog[0].text = `<strong>${id}</strong> moved to <em>${newStatus}</em> by <em>${CURRENT_USER}</em>`;
+        set(ref(db, 'actlog'), actLog.slice(0, 15)).catch(()=>{});
+      }
+    };
+  }
+
+  /* ── Real-time listeners — fire when ANY user changes data ── */
+  let _initDone = false;
+
+  // Wait until the page is fully loaded before starting listeners
+  // so updateAllDerivedUI() exists and the DOM is ready
+  window.addEventListener('load', () => {
+    setTimeout(startListeners, 500); // small delay to let DOMContentLoaded finish
+  });
+
+  function startListeners() {
+    /* 1. State listener — syncs task/PP statuses */
+    onValue(ref(db, 'state'), snapshot => {
+      const remote = snapshot.val();
+      if (!remote) { _initDone = true; setBadge('🟢 Live sync active · ' + CURRENT_USER + ' <span id="fb-change-name" style="cursor:pointer;text-decoration:underline;opacity:0.7" title="Change name">✏️</span>', '#6EE7B7');
+        attachChangeName(); return; }
+      const STATE = window.STATE;
+      if (!STATE) return;
+      let changed = false;
+      Object.entries(remote).forEach(([id, status]) => {
+        if (STATE[id] !== status) { STATE[id] = status; changed = true; }
+      });
+      if (changed && _initDone && window.updateAllDerivedUI) {
+        window.updateAllDerivedUI();
+      }
+      _initDone = true;
+      setBadge('🟢 Live sync active · ' + CURRENT_USER + ' <span id="fb-change-name" style="cursor:pointer;text-decoration:underline;opacity:0.7" title="Change name">✏️</span>', '#6EE7B7');
+      attachChangeName();
+    }, err => {
+      console.warn('[FB] state listener error', err);
+      setBadge('🔴 Sync error — check Firebase rules', '#FCA5A5');
+    });
+
+    /* 2. Custom items listener */
+    onValue(ref(db, 'custom_items'), snapshot => {
+      const remote = snapshot.val();
+      if (!remote || !_initDone) return;
+      const remoteItems = Object.values(remote);
+      const MASTER_DATA   = window.MASTER_DATA;
+      const CUSTOM_ITEMS  = window.CUSTOM_ITEMS;
+      const STATE         = window.STATE;
+      if (!MASTER_DATA || !CUSTOM_ITEMS || !STATE) return;
+
+      // Remove stale custom items from MASTER_DATA
+      for (let i = MASTER_DATA.length - 1; i >= 0; i--) {
+        if (MASTER_DATA[i].isCustom) MASTER_DATA.splice(i, 1);
+      }
+      CUSTOM_ITEMS.length = 0;
+
+      // Re-add all remote custom items
+      remoteItems.forEach(item => {
+        CUSTOM_ITEMS.push(item);
+        if (!MASTER_DATA.find(x => x.id === item.id)) {
+          MASTER_DATA.push(item);
+        }
+        if (!(item.id in STATE)) STATE[item.id] = item.status || 'Open';
+      });
+
+      if (window.updateAllDerivedUI) window.updateAllDerivedUI();
+    });
+
+    /* 3. Activity log listener */
+    onValue(ref(db, 'actlog'), snapshot => {
+      const remote = snapshot.val();
+      if (!remote || !_initDone) return;
+      const remoteLog = Array.isArray(remote) ? remote : Object.values(remote);
+      const actLog = window.actLog;
+      if (!actLog) return;
+      actLog.length = 0;
+      remoteLog.slice(0, 15).forEach(e => actLog.push(e));
+      // Refresh just the activity feed without full re-render
+      const feedEl  = document.getElementById('act-feed');
+      const countEl = document.getElementById('act-count');
+      if (countEl) countEl.textContent = actLog.length + ' events';
+      if (feedEl)  feedEl.innerHTML = actLog.slice(0, 8).map(a =>
+        `<div class="act-item"><span class="act-dot" style="background:${a.col}"></span><span class="act-text">${a.text}</span><span class="act-time">${a.time}</span></div>`
+      ).join('');
+    });
+  }
+
+} catch(err) {
+  console.error('[FB] Firebase init failed — running in offline mode:', err);
+}
+</script>
+
+</body>
+</html>
